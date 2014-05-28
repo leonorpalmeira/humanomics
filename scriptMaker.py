@@ -1,13 +1,21 @@
 
+import os
+
 def header(param,step):
     """Outputs the beginning of each script w/ appropriate parameters"""
+
+    for directory in ["SLURM Log directory","Scripts directory"]:
+        param[directory]=param[directory].rstrip(os.sep)+os.sep
+
+    for directory in ["Raw data directory","Results directory"]:
+        param[directory]=param[directory].rstrip(os.sep)
 
     str="""#!/bin/bash\n"""
     str+="""#\n"""
     str+="""#SBATCH --job-name="""+step+"""                                           #@@@ fill with appropriate value\n"""
     str+="""#SBATCH --mail-user="""+param["SLURM Email address"]+"""                    #@@@ fill with appropriate value: valid email address\n"""
     str+="""#SBATCH --mail-type="""+param["SLURM Email type"]+"""                                          #@@@ fill with appropriate value: here, email sent at the END of job\n"""
-    str+="""#SBATCH --output="""+param["SLURM Log directory"]+"""/slurm-"""+step+"""-%j.out         #@@@ fill with appropriate value: output log file\n"""
+    str+="""#SBATCH --output="""+param["SLURM Log directory"]+"""slurm-"""+step+"""-%j.out         #@@@ fill with appropriate value: output log file\n"""
     str+="""#\n"""
     str+="""#SBATCH --ntasks=1                                               #@@@ fill with appropriate value: here 1 task\n"""
     str+="""#SBATCH --cpus-per-task=1                                        #@@@ fill with appropriate value: here 1 core per task\n"""
@@ -84,7 +92,7 @@ def header(param,step):
     str+="""echo "query2:" $query2\n"""
     str+="""\n"""
     str+="""echo "************** Checking for directories ************"\n"""
-    str+="""for dir in $resdir $samstatdir $picarddir ; do\n"""
+    str+="""for dir in $resdir $bamdir $samstatdir $picarddir ; do\n"""
     str+="""    if  [ ! -e $dir ] ; then\n"""
     str+="""    mkdir $dir\n"""
     str+="""    fi\n"""
@@ -111,7 +119,13 @@ def header(param,step):
 def MappingAndPreProcessing(param):
     """Outputs the MappingAndPreProcessing.bash script"""
 
-    out="1--MappingAndPreProcessing.bash"
+    for directory in ["SLURM Log directory","Scripts directory"]:
+        param[directory]=param[directory].rstrip(os.sep)+os.sep
+
+    for directory in ["Raw data directory","Results directory"]:
+        param[directory]=param[directory].rstrip(os.sep)
+
+    out=param["Scripts directory"]+"1--MappingAndPreProcessing.bash"
 
     str=header(param,"map")
     str+="""echo "************** Launching BWA-MEM alignments ******************"\n"""
@@ -275,13 +289,19 @@ def MappingAndPreProcessing(param):
 def QualityControl(param):
     """Outputs the QualityControl.bash script"""
 
-    out="2a--QualityControl.bash"
+    for directory in ["SLURM Log directory","Scripts directory"]:
+        param[directory]=param[directory].rstrip(os.sep)+os.sep
+
+    for directory in ["Raw data directory","Results directory"]:
+        param[directory]=param[directory].rstrip(os.sep)
+
+    out=param["Scripts directory"]+"2a--QualityControl.bash"
 
     str=header(param,"qc")
     str+="""echo 'BAM for QC:' $bam_ready\n"""
     str+="""\n"""
     str+="""echo '************** Checking for directories ************'\n"""
-    str+="""for dir in $resdir $samstatdir $picarddir ; do\n"""
+    str+="""for dir in $resdir $bamdir $samstatdir $picarddir ; do\n"""
     str+="""    if  [ ! -e $dir ] ; then\n"""
     str+="""	mkdir $dir\n"""
     str+="""    fi\n"""
@@ -392,7 +412,12 @@ def QualityControl(param):
 def HaplotypeCaller(param):
     """Outputs the HaplotypeCaller.bash script"""
 
-    out="2b--HaplotypeCaller.bash"
+    for directory in ["SLURM Log directory","Scripts directory"]:
+        param[directory]=param[directory].rstrip(os.sep)+os.sep
+
+    for directory in ["Raw data directory","Results directory"]:
+        param[directory]=param[directory].rstrip(os.sep)
+    out=param["Scripts directory"]+"2b--HaplotypeCaller.bash"
 
     str=header(param,"hc")
     str+="""middfix='_HC3.1' #@@@ fill this in\n"""
@@ -400,7 +425,7 @@ def HaplotypeCaller(param):
     str+="""echo 'BAM for HC:' $bam_ready\n"""
     str+="""\n"""
     str+="""echo '************** Checking for directories ************'\n"""
-    str+="""for dir in $resdir $samstatdir $picarddir ; do\n"""
+    str+="""for dir in $resdir $bamdir $samstatdir $picarddir ; do\n"""
     str+="""    if  [ ! -e $dir ] ; then\n"""
     str+="""	mkdir $dir\n"""
     str+="""    fi\n"""

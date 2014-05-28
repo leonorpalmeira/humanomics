@@ -54,6 +54,13 @@ check_directory() {
 ###################
 
 unset PARAM
+get_response "Enter the full path to store your custom pipeline scripts [no default] > "
+if [ -n "$PARAM" ]; then
+    scriptsdir=$PARAM
+fi
+check_directory $scriptsdir
+
+unset PARAM
 get_response "Enter name of output configuration file [$output] > "
 if [ -n "$PARAM" ]; then
     output=$PARAM
@@ -76,10 +83,10 @@ check_directory $resdir
 
 unset PARAM
 get_response "Enter name of raw Fastq.gz suffix (paired-end expected) [$fastqsuffix] > " # WTF?? Very strange behaviour when a file named 'a' is present in the same directory as this script...???
-echo $fastqsuffix
 if [ -n "$PARAM" ]; then
     fastqsuffix=$PARAM
 fi
+echo $fastqsuffix
 # echo "Using suffix: [$fastqsuffix]"
 
 unset PARAM
@@ -152,7 +159,8 @@ echo "Done."
 
 
 ## Preparing output ##
-str="Raw data directory\t$datadir\n"
+str="Scripts directory\t$scriptsdir\n"
+str+="Raw data directory\t$datadir\n"
 str+="Results directory\t$resdir\n"
 str+="Fastq.gz suffix (paired-end expected)\t$fastqsuffix\n"
 str+="Reference assembly\t$ref\n"
