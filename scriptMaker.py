@@ -4,24 +4,24 @@ import os
 def header(param,step):
     """Outputs the beginning of each script w/ appropriate parameters"""
 
-    for directory in ["SLURM Log directory","Scripts directory"]:
+    for directory in ["SLURMlog","ScriptsDir"]:
         param[directory]=param[directory].rstrip(os.sep)+os.sep
 
-    for directory in ["Raw data directory","Results directory"]:
+    for directory in ["RawDataDir","ResultsDir"]:
         param[directory]=param[directory].rstrip(os.sep)
 
     str="""#!/bin/bash\n"""
     str+="""#\n"""
     str+="""#SBATCH --job-name="""+step+"""                                           #@@@ fill with appropriate value\n"""
-    str+="""#SBATCH --mail-user="""+param["SLURM Email address"]+"""                    #@@@ fill with appropriate value: valid email address\n"""
-    str+="""#SBATCH --mail-type="""+param["SLURM Email type"]+"""                                          #@@@ fill with appropriate value: here, email sent at the END of job\n"""
-    str+="""#SBATCH --output="""+param["SLURM Log directory"]+"""slurm-"""+step+"""-%j.out         #@@@ fill with appropriate value: output log file\n"""
+    str+="""#SBATCH --mail-user="""+param["SLURMemailaddress"]+"""                    #@@@ fill with appropriate value: valid email address\n"""
+    str+="""#SBATCH --mail-type="""+param["SLURMemailtype"]+"""                                          #@@@ fill with appropriate value: here, email sent at the END of job\n"""
+    str+="""#SBATCH --output="""+param["SLURMlog"]+"""slurm-"""+step+"""-%j.out         #@@@ fill with appropriate value: output log file\n"""
     str+="""#\n"""
     str+="""#SBATCH --ntasks=1                                               #@@@ fill with appropriate value: here 1 task\n"""
     str+="""#SBATCH --cpus-per-task=1                                        #@@@ fill with appropriate value: here 1 core per task\n"""
     str+="""#SBATCH --mem-per-cpu=10000                                      #@@@ fill with appropriate value: here 10Gb of RAM\n"""
     str+="""#SBATCH --time=4:30:00                                           #@@@ fill with appropriate value: here 4h30\n"""
-    str+="""#SBATCH --array="""+param["SLURM array"]+"""                                              #@@@ fill with appropriate value: here samples 1 to 4\n"""
+    str+="""#SBATCH --array="""+param["SLURMarray"]+"""                                              #@@@ fill with appropriate value: here samples 1 to 4\n"""
     str+="""\n"""
     str+="""echo "************** SLURM ENV ******************"\n"""
     str+="""echo "TASK_ID:" $TASK_ID\n"""
@@ -48,20 +48,20 @@ def header(param,step):
     str+="""echo "********************************************"\n"""
     str+="""echo ""\n"""
     str+="""echo "************** JOB ENV *********************"\n"""
-    str+="""datadir="""+param["Raw data directory"]+""" #@@@ fill this in \n"""
-    str+="""resdir="""+param["Results directory"]+"""       #@@@ fill this in\n"""
+    str+="""datadir="""+param["RawDataDir"]+""" #@@@ fill this in \n"""
+    str+="""resdir="""+param["ResultsDir"]+"""       #@@@ fill this in\n"""
     str+="""bamdir=$resdir/bam\n"""
     str+="""samstatdir=$resdir/samstat\n"""
     str+="""picarddir=$resdir/picard\n"""
-    str+="""fastqsuffix='"""+param["Fastq.gz suffix (paired-end expected)"]+"""' #@@@ fill this in\n"""
-    str+="""refname="""+param["Reference assembly"]+"""\n"""
+    str+="""fastqsuffix='"""+param["FastqGzSuffixPE"]+"""' #@@@ fill this in\n"""
+    str+="""refname="""+param["ReferenceAssembly"]+"""\n"""
     str+="""ref=$GLOBALSCRATCH/genomes/homo_sapiens/hg19/genome/HG19.fasta\n"""
     str+="""db=$GLOBALSCRATCH/genomes/homo_sapiens/hg19/bwa_hash/HG19.fasta\n"""
     str+="""vcfdir=$GLOBALSCRATCH/genomes/homo_sapiens/hg19/variation\n"""
-    str+="""targets="""+param["Target file"]+""" #@@@ fill this in\n"""
-    str+="""baitNames="""+param["baitNames file"]+""" #@@@ fill this in\n"""
-    str+="""baitsPicard="""+param["Baits file (Picard)"]+""" #@@@ fill this in\n"""
-    str+="""targetsPicard="""+param["Target file (Picard)"]+""" #@@@ fill this in\n"""
+    str+="""targets="""+param["TargetFile"]+""" #@@@ fill this in\n"""
+    str+="""baitNames="""+param["baitNames"]+""" #@@@ fill this in\n"""
+    str+="""baitsPicard="""+param["BaitsFilePicard"]+""" #@@@ fill this in\n"""
+    str+="""targetsPicard="""+param["TargetFilePicard"]+""" #@@@ fill this in\n"""
     str+="""echo "datadir:" $datadir\n"""
     str+="""echo "resdir:" $resdir\n"""
     str+="""echo "bamdir:" $bamdir\n"""
@@ -119,13 +119,13 @@ def header(param,step):
 def MappingAndPreProcessing(param):
     """Outputs the MappingAndPreProcessing.bash script"""
 
-    for directory in ["SLURM Log directory","Scripts directory"]:
+    for directory in ["SLURMlog","ScriptsDir"]:
         param[directory]=param[directory].rstrip(os.sep)+os.sep
 
-    for directory in ["Raw data directory","Results directory"]:
+    for directory in ["RawDataDir","ResultsDir"]:
         param[directory]=param[directory].rstrip(os.sep)
 
-    out=param["Scripts directory"]+"1--MappingAndPreProcessing.bash"
+    out=param["ScriptsDir"]+"1--MappingAndPreProcessing.bash"
 
     str=header(param,"map")
     str+="""echo "************** Launching BWA-MEM alignments ******************"\n"""
@@ -289,13 +289,13 @@ def MappingAndPreProcessing(param):
 def QualityControl(param):
     """Outputs the QualityControl.bash script"""
 
-    for directory in ["SLURM Log directory","Scripts directory"]:
+    for directory in ["SLURMlog","ScriptsDir"]:
         param[directory]=param[directory].rstrip(os.sep)+os.sep
 
-    for directory in ["Raw data directory","Results directory"]:
+    for directory in ["RawDataDir","ResultsDir"]:
         param[directory]=param[directory].rstrip(os.sep)
 
-    out=param["Scripts directory"]+"2a--QualityControl.bash"
+    out=param["ScriptsDir"]+"2a--QualityControl.bash"
 
     str=header(param,"qc")
     str+="""echo 'BAM for QC:' $bam_ready\n"""
@@ -412,12 +412,13 @@ def QualityControl(param):
 def HaplotypeCaller(param):
     """Outputs the HaplotypeCaller.bash script"""
 
-    for directory in ["SLURM Log directory","Scripts directory"]:
+    for directory in ["SLURMlog","ScriptsDir"]:
         param[directory]=param[directory].rstrip(os.sep)+os.sep
 
-    for directory in ["Raw data directory","Results directory"]:
+    for directory in ["RawDataDir","ResultsDir"]:
         param[directory]=param[directory].rstrip(os.sep)
-    out=param["Scripts directory"]+"2b--HaplotypeCaller.bash"
+
+    out=param["ScriptsDir"]+"2b--HaplotypeCaller.bash"
 
     str=header(param,"hc")
     str+="""middfix='_HC3.1' #@@@ fill this in\n"""
