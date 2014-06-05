@@ -1,5 +1,3 @@
-#test1
-#test2
 
 import os
 
@@ -475,8 +473,8 @@ def HaplotypeCaller(param):
     str+="""    -T HaplotypeCaller \\\n"""
     str+="""    -R $ref \\\n"""
     str+="""    -L $targets \\\n"""
-    str+="""    -I $prefix'.bam' \\\n"""
-    str+="""    -o $prefix$middfix.gvcf \\\n"""
+    str+="""    -I $bamdir/$prefix'_sorted_RG_rmd_indelreal_BQSR.bam' \\\n"""
+    str+="""    -o $bamdir/$prefix'_sorted_RG_rmd_indelreal_BQSR'$middfix'.gvcf' \\\n"""
     str+="""    --dbsnp $vcfdir'/dbsnp_137.hg19_sorted.vcf' \\\n"""
     str+="""    --emitRefConfidence GVCF \\\n"""
     str+="""    --variant_index_type LINEAR \\\n"""
