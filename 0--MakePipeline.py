@@ -44,6 +44,7 @@ if conf:
     scriptMaker.MappingAndPreProcessing(param)
     scriptMaker.QualityControl(param)
     scriptMaker.HaplotypeCaller(param)
+    scriptMaker.GenotypingAndRecalibrating(param)
 
     print "Done."
 
