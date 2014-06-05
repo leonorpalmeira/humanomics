@@ -20,4 +20,5 @@ This will start by writing a configuration file (pipeline.conf, by default) whic
 1--MappingAndPreProcessing.bash
 2a--QualityControl.bash
 2b--HaplotypeCaller.bash
+3--GenotypingAndRecalibrating.bash
 ```
