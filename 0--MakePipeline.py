@@ -40,6 +40,7 @@ if conf:
         param[tmp[0]]=tmp[1]
     f.close()
 
+    scriptMaker.FastQC(param)
     scriptMaker.MappingAndPreProcessing(param)
     scriptMaker.QualityControl(param)
     scriptMaker.HaplotypeCaller(param)

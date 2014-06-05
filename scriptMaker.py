@@ -52,6 +52,7 @@ def header(param,step):
     str+="""echo "************** JOB ENV *********************"\n"""
     str+="""datadir="""+param["RawDataDir"]+""" #@@@ fill this in \n"""
     str+="""resdir="""+param["ResultsDir"]+"""       #@@@ fill this in\n"""
+    str+="""fastqcdir=$resdir/fastqc\n"""
     str+="""bamdir=$resdir/bam\n"""
     str+="""samstatdir=$resdir/samstat\n"""
     str+="""picarddir=$resdir/picard\n"""
@@ -65,6 +66,7 @@ def header(param,step):
     str+="""baitsPicard="""+param["BaitsFilePicard"]+""" #@@@ fill this in\n"""
     str+="""targetsPicard="""+param["TargetFilePicard"]+""" #@@@ fill this in\n"""
     str+="""echo "datadir:" $datadir\n"""
+    str+="""echo "fastqcdir:" $fastqcdir\n"""
     str+="""echo "resdir:" $resdir\n"""
     str+="""echo "bamdir:" $bamdir\n"""
     str+="""echo "samstatdir:" $samstatdir\n"""
@@ -117,6 +119,39 @@ def header(param,step):
     str+="""echo "******************* Here is my @RG:" $RG "*******************"\n"""
     str+="""\n"""
     return str    
+
+def FastQC(param):
+    """Outputs the FastQC.bash script"""
+
+    for directory in ["SLURMlog","ScriptsDir"]:
+        param[directory]=param[directory].rstrip(os.sep)+os.sep
+
+    for directory in ["RawDataDir","ResultsDir"]:
+        param[directory]=param[directory].rstrip(os.sep)
+
+    out=param["ScriptsDir"]+"0--FastQC.bash"
+
+    str=header(param,"map")
+    str+="""echo "************** Launching FastQC report PE1 ******************"\n"""
+    str+="""echo "@INPUT" $query1\n"""
+    str+="""echo "@OUTPUT"\n"""
+    str+="""$BIN/fastqc-0.10.1 --noextract --outdir=$fastqcdir $query1\n"""
+    str+="""\n"""
+    str+="""echo "************** Launching FastQC report PE2 ******************"\n"""
+    str+="""echo "@INPUT" $query2\n"""
+    str+="""echo "@OUTPUT"\n"""
+    str+="""$BIN/fastqc-0.10.1 --noextract --outdir=$fastqcdir $query2\n"""
+    str+="""\n"""
+    str+="""echo "************** Finished ******************"\n"""
+
+    try:
+        f=open(out,"w")
+        f.write(str)
+        f.close()
+    except IOError, e:
+        print "File not found: [", out, "]"
+        sys.exit(2)
+    return
 
 def MappingAndPreProcessing(param):
     """Outputs the MappingAndPreProcessing.bash script"""
