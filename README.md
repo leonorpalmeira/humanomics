@@ -10,7 +10,7 @@ For now, just run:
 
 ```
 ./0--ConfigurePipeline.bash
-./0--MakePipeline.py
+./0--MakePipeline.py -c <pipeline.conf>
 ```
 
 This will start by writing a configuration file (pipeline.conf, by default) which will be used to produce the following SLURM scripts:
