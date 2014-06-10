@@ -10,7 +10,8 @@ def header(param,step):
     for directory in ["RawDataDir","ResultsDir"]:
         param[directory]=param[directory].rstrip(os.sep)
 
-    str="""#!/bin/bash\n"""
+    str="""#!/usr/bin/env bash\n"""
+    str+="""# -*- coding: utf-8 -*-\n"""
     str+="""#\n"""
     str+="""#SBATCH --job-name="""+step+"""                                           #@@@ fill with appropriate value\n"""
     str+="""#SBATCH --mail-user="""+param["SLURMemailaddress"]+"""                    #@@@ fill with appropriate value: valid email address\n"""
@@ -33,7 +34,7 @@ def header(param,step):
     str+="""i=$SLURM_ARRAY_TASK_ID                                             \n"""
     str+="""ncores=$SLURM_CPUS_ON_NODE #@@@ this value should match --cpus-per-task\n"""
     str+="""nthreads=1\n"""
-    str+="""mem=1 #@@@ should match in Gb --mem-per-cpu\n"""
+    str+="""mem=10 #@@@ should match in Gb --mem-per-cpu\n"""
     str+="""echo "*******************************************"\n"""
     str+="""echo ""\n"""
     str+="""echo "************** GLOBAL ENV ******************"\n"""
