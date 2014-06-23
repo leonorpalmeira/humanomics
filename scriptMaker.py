@@ -58,6 +58,7 @@ def header(param,step):
     str+="""fastqsuffix='"""+param["FastqGzSuffixPE"]+"""' #@@@ fill this in\n"""
     str+="""refname="""+param["ReferenceAssembly"]+"""\n"""
     str+="""ref=$GLOBALSCRATCH/genomes/homo_sapiens/hg19/genome/HG19.fasta\n"""
+    str+="""dict=$GLOBALSCRATCH/genomes/homo_sapiens/hg19/genome/HG19.dict\n"""
     str+="""db=$GLOBALSCRATCH/genomes/homo_sapiens/hg19/bwa_hash/HG19.fasta\n"""
     str+="""vcfdir=$GLOBALSCRATCH/genomes/homo_sapiens/hg19/variation\n"""
     str+="""targets="""+param["TargetFile"]+""" #@@@ fill this in\n"""
