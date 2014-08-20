@@ -149,6 +149,12 @@ echo "Estimating array value for SLURM ..."
 slurmarray="1-"`\ls $datadir/*R1* | wc -l`
 echo "Done."
 
+unset PARAM
+get_response "(optional) No Phone Home (GATK) key [no default] > "
+if [ -n "$PARAM" ]; then
+    noET=$PARAM
+fi
+check_file $noET
 
 # # Read Groups should follow:
 
@@ -172,6 +178,9 @@ str+="SLURMemailaddress\t$email\n"
 str+="SLURMemailtype\t$emailtype\n"
 str+="SLURMlog\t$slurmlogdir\n"
 str+="SLURMarray\t$slurmarray\n"
+if [ -n "$noET" ]; then
+    str+="noPhoneHome\t$noET\n"
+fi
 
 echo ""
 echo "######### Pipeline configuration ########"
