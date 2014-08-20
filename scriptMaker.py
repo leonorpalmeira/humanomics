@@ -7,7 +7,7 @@ def noPhoneHome(param,sout):
 
     stmp=sout.rstrip()+""" \\\n""" # replace w/ appropriate end of line
     stmp+="""    -et NO_ET \\\n"""
-    stmp+="""    -K """+param["noPhoneHome"]+"""\n"""
+    stmp+="""    -K $noET\n"""
     stmp+="""\n"""
     return stmp
 
@@ -52,12 +52,14 @@ def header(param,step):
     sout+="""BIN=$GLOBALSCRATCH/bin\n"""
     sout+="""SRC=$GLOBALSCRATCH/src\n"""
     sout+="""JAVAcustom=$BIN"/java-1.7.0_25 -Xmx"$mem"g -XX:ParallelGCThreads="$ncores" -jar"\n"""
+    if param.has_key("noPhoneHome"):
+        sout+="""noET="""+param["noPhoneHome"]+"""\n"""
     sout+="""echo "BIN:" $BIN\n"""
     sout+="""echo "SRC:" $SRC\n"""
     sout+="""echo "HOME:" $HOME\n"""
     sout+="""echo "PATH:" $PATH\n"""
     if param.has_key("noPhoneHome"):
-        sout+="""echo "No Phone Home (GATK):" """+param["noPhoneHome"]+"""\n"""
+        sout+="""echo "No Phone Home (GATK):" $noET\n"""
     sout+="""echo "********************************************"\n"""
     sout+="""echo ""\n"""
     sout+="""echo "************** JOB ENV *********************"\n"""
