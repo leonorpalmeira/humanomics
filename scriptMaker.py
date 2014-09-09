@@ -114,7 +114,7 @@ def header(param,step):
     sout+="""echo "query2:" $query2\n"""
     sout+="""\n"""
     sout+="""echo "************** Checking for directories ************"\n"""
-    sout+="""for dir in $resdir $bamdir $samstatdir $picarddir ; do\n"""
+    sout+="""for dir in $fastqcdir $resdir $bamdir $samstatdir $picarddir ; do\n"""
     sout+="""    if  [ ! -e $dir ] ; then\n"""
     sout+="""    mkdir $dir\n"""
     sout+="""    fi\n"""
