@@ -75,10 +75,14 @@ def header(param,step):
     sout+="""dict=$GLOBALSCRATCH/genomes/homo_sapiens/hg19/genome/HG19.dict\n"""
     sout+="""db=$GLOBALSCRATCH/genomes/homo_sapiens/hg19/bwa_hash/HG19.fasta\n"""
     sout+="""vcfdir=$GLOBALSCRATCH/genomes/homo_sapiens/hg19/variation\n"""
-    sout+="""targets="""+param["TargetFile"]+""" #@@@ fill this in\n"""
-    sout+="""baitNames="""+param["baitNames"]+""" #@@@ fill this in\n"""
-    sout+="""baitsPicard="""+param["BaitsFilePicard"]+""" #@@@ fill this in\n"""
-    sout+="""targetsPicard="""+param["TargetFilePicard"]+""" #@@@ fill this in\n"""
+    if param["AnalysisMode"]=="EXOME":
+        sout+="""echo "*************** EXOME Analysis Mode *****************\n"""
+        sout+="""targets="""+param["TargetFile"]+""" #@@@ fill this in\n"""
+        sout+="""baitNames="""+param["baitNames"]+""" #@@@ fill this in\n"""
+        sout+="""baitsPicard="""+param["BaitsFilePicard"]+""" #@@@ fill this in\n"""
+        sout+="""targetsPicard="""+param["TargetFilePicard"]+""" #@@@ fill this in\n"""
+    else:
+        sout+="""echo "*************** GENOME Analysis Mode *****************\n"""
     sout+="""echo "datadir:" $datadir\n"""
     sout+="""echo "fastqcdir:" $fastqcdir\n"""
     sout+="""echo "resdir:" $resdir\n"""
@@ -265,7 +269,8 @@ def MappingAndPreProcessing(param):
     sout+="""    -nct $ncores \\\n"""
     sout+="""    -I $indel_bam \\\n"""
     sout+="""    -R $ref \\\n"""
-    sout+="""    -L $targets \\\n"""
+    if param["AnalysisMode"]=="EXOME":
+        sout+="""    -L $targets \\\n"""
     sout+="""    -knownSites $vcfdir"/dbsnp_137.hg19_sorted.vcf" \\\n"""
     sout+="""    -knownSites $vcfdir"/Mills_and_1000G_gold_standard.indels.hg19_sorted.vcf" \\\n"""
     sout+="""    -knownSites $vcfdir"/1000G_phase1.indels.hg19_sorted.vcf" \\\n"""
@@ -281,7 +286,8 @@ def MappingAndPreProcessing(param):
     sout+="""    -T PrintReads \\\n"""
     sout+="""    -nct $ncores \\\n"""
     sout+="""    -R $ref \\\n"""
-    sout+="""    -L $targets \\\n"""
+    if param["AnalysisMode"]=="EXOME":
+        sout+="""    -L $targets \\\n"""
     sout+="""    -I $indel_bam \\\n"""
     sout+="""    -BQSR ${indel_bam//.bam}_recal1.grp \\\n"""
     sout+="""    -o $bam_ready\n"""
@@ -298,7 +304,8 @@ def MappingAndPreProcessing(param):
     sout+="""    -nct $ncores \\\n"""
     sout+="""    -I $indel_bam \\\n"""
     sout+="""    -R $ref \\\n"""
-    sout+="""    -L $targets \\\n"""
+    if param["AnalysisMode"]=="EXOME":
+        sout+="""    -L $targets \\\n"""
     sout+="""    -knownSites $vcfdir"/dbsnp_137.hg19_sorted.vcf" \\\n"""
     sout+="""    -knownSites $vcfdir"/Mills_and_1000G_gold_standard.indels.hg19_sorted.vcf" \\\n"""
     sout+="""    -knownSites $vcfdir"/1000G_phase1.indels.hg19_sorted.vcf" \\\n"""
@@ -314,7 +321,8 @@ def MappingAndPreProcessing(param):
     sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.1-1/GenomeAnalysisTK.jar \\\n"""
     sout+="""    -T AnalyzeCovariates \\\n"""
     sout+="""    -R $ref \\\n"""
-    sout+="""    -L $targets \\\n"""
+    if param["AnalysisMode"]=="EXOME":
+        sout+="""    -L $targets \\\n"""
     sout+="""    -before ${indel_bam//.bam}_recal1.grp \\\n"""
     sout+="""    -after ${indel_bam//.bam}_recal2.grp \\\n"""
     sout+="""    -csv ${indel_bam//.bam}_BQSR.csv \\\n"""
@@ -421,12 +429,14 @@ def QualityControl(param):
     sout+="""    ${bam_ready//.bam}.tdf \\\n"""
     sout+="""    $refname\n"""
     sout+="""\n"""
-    sout+="""# WARNING: careful with the manifest and target files here!\n"""
+    if param["AnalysisMode"]=="EXOME":
+        sout+="""# WARNING: careful with the manifest and target files here!\n"""
     sout+="""echo '************** Launching Picard CalculateHSMetrics ******************'\n"""
     sout+="""$JAVAcustom $SRC/picard-tools-1.73/CalculateHsMetrics.jar \\\n"""
-    sout+="""    BAIT_SET_NAME=$baitNames \\\n"""
-    sout+="""    BAIT_INTERVALS=$baitsPicard \\\n"""
-    sout+="""    TARGET_INTERVALS=$targetsPicard \\\n"""
+    if param["AnalysisMode"]=="EXOME":
+        sout+="""    BAIT_SET_NAME=$baitNames \\\n"""
+        sout+="""    BAIT_INTERVALS=$baitsPicard \\\n"""
+        sout+="""    TARGET_INTERVALS=$targetsPicard \\\n"""
     sout+="""    INPUT=$bam_ready \\\n"""
     sout+="""    OUTPUT=${bam_ready//.bam}'.hsm' \\\n"""
     sout+="""    VALIDATION_STRINGENCY=LENIENT \\\n"""
@@ -434,14 +444,15 @@ def QualityControl(param):
     sout+="""    METRIC_ACCUMULATION_LEVEL=SAMPLE \\\n"""
     sout+="""    TMP_DIR=$GLOBALSCRATCH\n"""
     sout+="""\n"""
-    sout+="""echo '************** Launching GATK DiagnoseTargets ******************'\n"""
-    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.1-1/GenomeAnalysisTK.jar \\\n"""
-    sout+="""    -T DiagnoseTargets \\\n"""
-    sout+="""    -R $ref \\\n"""
-    sout+="""    -I $bam_ready \\\n"""
-    sout+="""    -o ${bam_ready//.bam}.diagt \\\n"""
-    sout+="""    -L $targets\n"""
-    sout+="""\n"""
+    if param["AnalysisMode"]=="EXOME":
+        sout+="""echo '************** Launching GATK DiagnoseTargets ******************'\n"""
+        sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.1-1/GenomeAnalysisTK.jar \\\n"""
+        sout+="""    -T DiagnoseTargets \\\n"""
+        sout+="""    -R $ref \\\n"""
+        sout+="""    -I $bam_ready \\\n"""
+        sout+="""    -o ${bam_ready//.bam}.diagt \\\n"""
+        sout+="""    -L $targets\n"""
+        sout+="""\n"""
     if param.has_key("noPhoneHome"):
         sout=noPhoneHome(param,sout)
     sout+="""echo '************** Launching GATK DepthOfCoverage ******************'\n"""
@@ -449,11 +460,12 @@ def QualityControl(param):
     sout+="""    -T DepthOfCoverage \\\n"""
     sout+="""    -R $ref \\\n"""
     sout+="""    -I $bam_ready \\\n"""
+    if param["AnalysisMode"]=="EXOME":
+        sout+="""    -L $targets\\\n"""
     sout+="""    -o ${bam_ready//.bam}'.cov' \\\n"""
     sout+="""    -pt sample \\\n"""
     sout+="""    --omitDepthOutputAtEachBase \\\n"""
-    sout+="""    -ct 20 \\\n"""
-    sout+="""    -L $targets\n"""
+    sout+="""    -ct 20 \n"""
     sout+="""\n"""
     if param.has_key("noPhoneHome"):
         sout=noPhoneHome(param,sout)
@@ -488,7 +500,8 @@ def HaplotypeCaller(param):
     sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.1-1/GenomeAnalysisTK.jar \\\n"""
     sout+="""    -T HaplotypeCaller \\\n"""
     sout+="""    -R $ref \\\n"""
-    sout+="""    -L $targets \\\n"""
+    if param["AnalysisMode"]=="EXOME":
+        sout+="""    -L $targets \\\n"""
     sout+="""    -I $bamdir/$prefix'_sorted_RG_rmd_indelreal_BQSR.bam' \\\n"""
     sout+="""    -o $bamdir/$prefix'_sorted_RG_rmd_indelreal_BQSR'$middfix'.gvcf' \\\n"""
     sout+="""    --dbsnp $vcfdir'/dbsnp_137.hg19_sorted.vcf' \\\n"""
@@ -533,11 +546,12 @@ def GenotypingAndRecalibrating(param):
     sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.1-1/GenomeAnalysisTK.jar \\\n"""
     sout+="""    -T GenotypeGVCFs \\\n"""
     sout+="""    -V $gvcflist \\\n"""
+    if param["AnalysisMode"]=="EXOME":
+        sout+="""    -L $targets\\\n"""
     sout+="""    -o $resdir/$prefix$middfix.vcf \\\n"""
     sout+="""    -R $ref \\\n"""
     sout+="""    -nt $nthreads \\\n"""
-    sout+="""    --dbsnp $vcfdir"/dbsnp_137.hg19_sorted.vcf" \\\n"""
-    sout+="""    -L $targets\n"""
+    sout+="""    --dbsnp $vcfdir"/dbsnp_137.hg19_sorted.vcf" \n"""
     sout+="""\n"""
     if param.has_key("noPhoneHome"):
         sout=noPhoneHome(param,sout)
@@ -547,7 +561,8 @@ def GenotypingAndRecalibrating(param):
     sout+="""    -nt $nthreads \\\n"""
     sout+="""    -R $ref \\\n"""
     sout+="""    -input $resdir/$prefix$middfix.vcf \\\n"""
-    sout+="""    -L $targets \\\n"""
+    if param["AnalysisMode"]=="EXOME":
+        sout+="""    -L $targets \\\n"""
     sout+="""    -resource:hapmap,VCF,known=false,training=true,truth=true,prior=15.0 $vcfdir"/hapmap_3.3.hg19_sorted.vcf" \\\n"""
     sout+="""    -resource:omni,VCF,known=false,training=true,truth=true,prior=12.0 $vcfdir"/1000G_omni2.5.hg19_sorted.vcf" \\\n"""
     sout+="""    -resource:1000G,known=false,training=true,truth=false,prior=10.0 $vcfdir"/1000G_phase1.snps.high_confidence.hg19_sorted.vcf" \\\n"""
@@ -567,7 +582,8 @@ def GenotypingAndRecalibrating(param):
     sout+="""    -nt $nthreads \\\n"""
     sout+="""    -R $ref \\\n"""
     sout+="""    -input $resdir/$prefix$middfix.vcf \\\n"""
-    sout+="""    -L $targets \\\n"""
+    if param["AnalysisMode"]=="EXOME":
+        sout+="""    -L $targets \\\n"""
     sout+="""    --ts_filter_level 99.0 \\\n"""
     sout+="""    -recalFile $recalSNP \\\n"""
     sout+="""    -tranchesFile $tranchesSNP \\\n"""
@@ -582,7 +598,8 @@ def GenotypingAndRecalibrating(param):
     sout+="""    -nt $nthreads \\\n"""
     sout+="""    -R $ref \\\n"""
     sout+="""    -input $recalTMPVCF \\\n"""
-    sout+="""    -L $targets \\\n"""
+    if param["AnalysisMode"]=="EXOME":
+        sout+="""    -L $targets \\\n"""
     sout+="""    -resource:mills,VCF,known=false,training=true,truth=true,prior=12.0 $vcfdir"/Mills_and_1000G_gold_standard.indels.hg19_sorted.vcf" \\\n"""
     sout+="""    -resource:dbsnp,VCF,known=true,training=false,truth=false,prior=2.0 $vcfdir"/dbsnp_137.hg19_sorted.vcf" \\\n"""
     sout+="""    -an FS -an ReadPosRankSum -an MQRankSum \\\n"""
@@ -600,7 +617,8 @@ def GenotypingAndRecalibrating(param):
     sout+="""    -nt $nthreads \\\n"""
     sout+="""    -R $ref \\\n"""
     sout+="""    -input $recalTMPVCF \\\n"""
-    sout+="""    -L $targets \\\n"""
+    if param["AnalysisMode"]=="EXOME":
+        sout+="""    -L $targets \\\n"""
     sout+="""    --ts_filter_level 99.0 \\\n"""
     sout+="""    -tranchesFile $tranchesINDEL \\\n"""
     sout+="""    -recalFile $recalINDEL \\\n"""

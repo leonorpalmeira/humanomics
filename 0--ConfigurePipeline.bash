@@ -82,7 +82,7 @@ fi
 check_directory $resdir
 
 unset PARAM
-get_response "Enter name of raw Fastq.gz suffix (paired-end expected) [$fastqsuffix] > " # WTF?? Very strange behaviour when a file named 'a' is present in the same directory as this script...???
+get_response "Enter name of raw Fastq.gz suffix (paired-end expected) [$fastqsuffix] > " # ?? Very strange behaviour when a file named 'a' is present in the same directory as this script...???
 if [ -n "$PARAM" ]; then
     fastqsuffix=$PARAM
 fi
@@ -100,31 +100,36 @@ fi
 # echo "Using suffix: [$ref]"
 
 unset PARAM
-get_response "Enter full path of target file [no default] > "
+get_response "Please define analysis mode: (1)GENOME or (2)EXOME [2] > "
 if [ -n "$PARAM" ]; then
-    targets=$PARAM
-fi
-check_file $targets
-
-unset PARAM
-get_response "Enter baitNames [no default] > "
-if [ -n "$PARAM" ]; then
-    baitNames=$PARAM
+    mode=$PARAM
 fi
 
-unset PARAM
-get_response "Enter full path of baits (Picard) file [no default] > "
-if [ -n "$PARAM" ]; then
-    baitsPicard=$PARAM
+if [ "$mode" == "2" ] ; then
+    unset PARAM
+    get_response "Enter full path of target file [no default] > "
+    if [ -n "$PARAM" ]; then
+	targets=$PARAM
+    fi
+    check_file $targets
+    unset PARAM
+    get_response "Enter baitNames [no default] > "
+    if [ -n "$PARAM" ]; then
+	baitNames=$PARAM
+    fi
+    unset PARAM
+    get_response "Enter full path of baits (Picard) file [no default] > "
+    if [ -n "$PARAM" ]; then
+	baitsPicard=$PARAM
+    fi
+    check_file $baitsPicard
+    unset PARAM
+    get_response "Enter full path of target (Picard) file [no default] > "
+    if [ -n "$PARAM" ]; then
+	targetsPicard=$PARAM
+    fi
+    check_file $targetsPicard
 fi
-check_file $baitsPicard
-
-unset PARAM
-get_response "Enter full path of target (Picard) file [no default] > "
-if [ -n "$PARAM" ]; then
-    targetsPicard=$PARAM
-fi
-check_file $targetsPicard
 
 unset PARAM
 get_response "Email address for SLURM [no default] > "
@@ -170,10 +175,15 @@ str+="RawDataDir\t$datadir\n"
 str+="ResultsDir\t$resdir\n"
 str+="FastqGzSuffixPE\t$fastqsuffix\n"
 str+="ReferenceAssembly\t$ref\n"
-str+="TargetFile\t$targets\n"
-str+="baitNames\t$baitNames\n"
-str+="BaitsFilePicard\t$baitsPicard\n"
-str+="TargetFilePicard\t$targetsPicard\n"
+if [ "$mode" == "2" ]; then # EXOME mode
+    str+="AnalysisMode\tEXOME\n"
+    str+="TargetFile\t$targets\n"
+    str+="baitNames\t$baitNames\n"
+    str+="BaitsFilePicard\t$baitsPicard\n"
+    str+="TargetFilePicard\t$targetsPicard\n"
+else
+    str+="AnalysisMode\tGENOME\n"
+fi
 str+="SLURMemailaddress\t$email\n"
 str+="SLURMemailtype\t$emailtype\n"
 str+="SLURMlog\t$slurmlogdir\n"
