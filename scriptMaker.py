@@ -134,7 +134,7 @@ def FastQC(param):
 
     out=param["ScriptsDir"]+"0--FastQC.bash"
 
-    sout=header(param,"map")
+    sout=header(param,"fastqc")
     sout+="""echo "************** Launching FastQC report PE1 ******************"\n"""
     sout+="""echo "@INPUT" $query1\n"""
     sout+="""echo "@OUTPUT"\n"""
@@ -491,7 +491,7 @@ def HaplotypeCaller(param):
 
     out=param["ScriptsDir"]+"2b--HaplotypeCaller.bash"
 
-    sout=header(param,"hc")
+    sout=header(param,"gvcf")
     sout+="""middfix='_HC3.1' #@@@ fill this in\n"""
     sout+="""\n"""
     sout+="""echo 'BAM for HC:' $bam_ready\n"""
@@ -534,7 +534,7 @@ def GenotypingAndRecalibrating(param):
 
     out=param["ScriptsDir"]+"3--GenotypingAndRecalibrating.bash"
 
-    sout=header(param,"hc")
+    sout=header(param,"vcf")
     sout+="""middfix='_HC3.1' #@@@ fill this in\n"""
     sout+="""\n"""
     sout+="""cd $resdir\n"""
