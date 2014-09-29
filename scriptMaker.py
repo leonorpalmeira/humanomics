@@ -453,8 +453,8 @@ def QualityControl(param):
         sout+="""    -o ${bam_ready//.bam}.diagt \\\n"""
         sout+="""    -L $targets\n"""
         sout+="""\n"""
-    if param.has_key("noPhoneHome"):
-        sout=noPhoneHome(param,sout)
+        if param.has_key("noPhoneHome"):
+            sout=noPhoneHome(param,sout)
     sout+="""echo '************** Launching GATK DepthOfCoverage ******************'\n"""
     sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.1-1/GenomeAnalysisTK.jar \\\n"""
     sout+="""    -T DepthOfCoverage \\\n"""
