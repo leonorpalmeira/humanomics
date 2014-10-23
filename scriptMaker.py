@@ -503,7 +503,7 @@ def HaplotypeCaller(param):
     if param["AnalysisMode"]=="EXOME":
         sout+="""    -L $targets \\\n"""
     sout+="""    -I $bam_ready \\\n"""
-    sout+="""    -o ${bam_ready/.bam/$middfix".gvcf"} \\\n"""
+    sout+="""    -o ${resvcfdir}$( echo $bam_ready | sed -e 's#'$bamdir'##; s#.bam##' )${middfix}".gvcf" \\\n"""
     sout+="""    --dbsnp $vcfdir'/dbsnp_137.hg19_sorted.vcf' \\\n"""
     sout+="""    --emitRefConfidence GVCF \\\n"""
     sout+="""    --variant_index_type LINEAR \\\n"""
