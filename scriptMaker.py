@@ -626,7 +626,7 @@ def GenotypingAndRecalibrating(param):
     if param.has_key("noPhoneHome"):
         sout=noPhoneHome(param,sout)
     sout+="""echo "************** Launching Variant Effect Predictor (VEP - Ensembl) annotation ******************"\n"""
-    sout+="""perl $SRC/ensembl-tools-release-75/scripts/variant_effect_predictor/variant_effect_predictor.pl -i $recalVCF --cache --everything --vcf --force_overwrite\n"""
+    sout+="""perl $SRC/ensembl-tools-release-77/scripts/variant_effect_predictor/variant_effect_predictor.pl -i $recalVCF --cache --everything --vcf --force_overwrite\n"""
     sout+="""$SRC/vcfsorter.pl $dict variant_effect_output.txt > $recalVEP_VCF\n"""
     sout+="""mv variant_effect_output.txt_summary.html $recalVEP_html\n"""
     sout+="""\n"""
