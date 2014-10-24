@@ -628,7 +628,12 @@ def GenotypingAndRecalibrating(param):
     if param.has_key("noPhoneHome"):
         sout=noPhoneHome(param,sout)
     sout+="""echo "************** Launching Variant Effect Predictor (VEP - Ensembl) annotation ******************"\n"""
-    sout+="""perl $SRC/ensembl-tools-release-77/scripts/variant_effect_predictor/variant_effect_predictor.pl -i $resvcfdir/$prefix$middfix_recal_final.vcf --cache --everything --vcf --force_overwrite --output_file $resvcfdir/$prefix$middfix_recal_final_VEP.vcf --stats_file $resvcfdir/$prefix$middfix_recal_final_VEP_summary.html \n"""
+    sout+="""perl $SRC/ensembl-tools-release-77/scripts/variant_effect_predictor/variant_effect_predictor.pl \\\n"""
+    sout+="""    -i $resvcfdir/$prefix$middfix_recal_final.vcf \\\n"""
+    sout+="""    --cache --everything --vcf --force_overwrite \\\n"""
+    sout+="""    --output_file $resvcfdir/$prefix$middfix_recal_final_VEP.vcf \\\n"""
+    sout+="""    --stats_file $resvcfdir/$prefix$middfix_recal_final_VEP_summary.html \n"""
+    sout+="""\n"""
     sout+="""randomNumber=$RANDOM \n"""
     sout+="""$SRC/vcfsorter.pl $dict $resvcfdir/$prefix$middfix_recal_final_VEP.vcf > swap_$randomNumber \n"""
     sout+="""mv swap_$randomNumber $resvcfdir/$prefix$middfix_recal_final_VEP.vcf \n"""
