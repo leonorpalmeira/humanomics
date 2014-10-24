@@ -79,7 +79,6 @@ def header(param,step):
     if param["AnalysisMode"]=="EXOME":
         sout+="""echo "*************** EXOME Analysis Mode *****************"\n"""
         sout+="""targets="""+param["TargetFile"]+""" #@@@ fill this in\n"""
-        sout+="""baitNames="""+param["baitNames"]+""" #@@@ fill this in\n"""
         sout+="""baitsPicard="""+param["BaitsFilePicard"]+""" #@@@ fill this in\n"""
         sout+="""targetsPicard="""+param["TargetFilePicard"]+""" #@@@ fill this in\n"""
     else:
@@ -435,7 +434,6 @@ def QualityControl(param):
         sout+="""# WARNING: careful with the manifest and target files here!\n"""
         sout+="""echo '************** Launching Picard CalculateHSMetrics ******************'\n"""
         sout+="""$JAVAcustom $SRC/picard-tools-1.73/CalculateHsMetrics.jar \\\n"""
-        sout+="""    BAIT_SET_NAME=$baitNames \\\n"""
         sout+="""    BAIT_INTERVALS=$baitsPicard \\\n"""
         sout+="""    TARGET_INTERVALS=$targetsPicard \\\n"""
         sout+="""    INPUT=$bam_ready \\\n"""

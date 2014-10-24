@@ -113,11 +113,6 @@ if [ "$mode" == "2" ] ; then
     fi
     check_file $targets
     unset PARAM
-    get_response "Enter baitNames [no default] > "
-    if [ -n "$PARAM" ]; then
-	baitNames=$PARAM
-    fi
-    unset PARAM
     get_response "Enter full path of baits (Picard) file [no default] > "
     if [ -n "$PARAM" ]; then
 	baitsPicard=$PARAM
@@ -178,7 +173,6 @@ str+="ReferenceAssembly\t$ref\n"
 if [ "$mode" == "2" ]; then # EXOME mode
     str+="AnalysisMode\tEXOME\n"
     str+="TargetFile\t$targets\n"
-    str+="baitNames\t$baitNames\n"
     str+="BaitsFilePicard\t$baitsPicard\n"
     str+="TargetFilePicard\t$targetsPicard\n"
 else
