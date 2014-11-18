@@ -425,7 +425,7 @@ def QualityControl(param):
     sout+="""echo '************** Launching IGVtools count **********'\n"""
     sout+="""$JAVAcustom $SRC/IGVTools-1.5.10/igvtools.jar count \\\n"""
     sout+="""    $bam_ready  \\\n"""
-    sout+="""    ${bam_ready/.bam/.tdf} \\\n"""
+    sout+="""    ${bam_ready/.bam/.tdf},${bam_ready/.bam/.wig} \\\n"""
     sout+="""    $refname\n"""
     sout+="""\n"""
     if param["AnalysisMode"]=="EXOME":

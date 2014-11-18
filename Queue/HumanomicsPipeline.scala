@@ -164,8 +164,11 @@ class HumanomicsPipeline extends QScript {
 //    val query1 = queries(0) // get first value -> TO BE MODIFIED for more files
 //    val query2 = queries(1) // get second value -> TO BE MODIFIED for more files
 
-    val tmp = query1.split("/")
-    val bam = swapExt(outdir + "/bam/" + tmp(tmp.length-1), ".fastq.gz", "_RG.bam")
+    val tmp = query1.split("/") // "/" splitting syntax is not straightforward...
+    println(query1)
+    println(tmp.length -1 )
+    println(outdir + "/bam/" + tmp(tmp.length -1 ))
+    val bam = swapExt(outdir + "/bam/" + tmp(tmp.length - 1), ".fastq.gz", "_RG.bam")
 
     val sorted_bam = swapExt(bam, "_RG.bam", "_sorted_RG.bam") 
     val dedup_bam = swapExt(bam, "_RG.bam", "_sorted_RG_rmd.bam")
