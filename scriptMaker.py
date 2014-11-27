@@ -461,7 +461,7 @@ def QualityControl(param):
     sout+="""    -o ${bam_ready/.bam/.cov} \\\n"""
     sout+="""    -pt sample \\\n"""
     sout+="""    --omitDepthOutputAtEachBase \\\n"""
-    sout+="""    -ct 20 \n"""
+    sout+="""    -ct 10 -ct 20 -ct 30 \n"""
     sout+="""\n"""
     if param.has_key("noPhoneHome"):
         sout=noPhoneHome(param,sout)
