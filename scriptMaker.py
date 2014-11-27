@@ -529,8 +529,8 @@ def GenotypingAndRecalibrating(param):
         param[directory]=param[directory].rstrip(os.sep)
 
     out=param["ScriptsDir"]+"3--GenotypingAndRecalibrating.bash"
-
     sout=header(param,"vcf")
+    sout+="""\n"""
     sout+="""middfix='_HC3.1'\n"""
     sout+="""\n"""
     sout+="""cd $resvcfdir\n"""
@@ -630,6 +630,8 @@ def GenotypingAndRecalibrating(param):
     sout+="""    --everything \\\n"""
     sout+="""    --vcf \\\n"""
     sout+="""    --force_overwrite \\\n"""
+    sout+="""    --dir_cache $GLOBALSCRATCH/.vep \\\n"""
+    sout+="""    --offline \\\n"""
     sout+="""    --output_file $resvcfdir/$prefix$middfix_recal_final_VEP.vcf \\\n"""
     sout+="""    --stats_file $resvcfdir/$prefix$middfix_recal_final_VEP_summary.html \n"""
     sout+="""\n"""
