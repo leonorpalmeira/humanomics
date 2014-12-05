@@ -26,7 +26,7 @@ def header(param,step):
     sout+="""#SBATCH --job-name="""+step+"""\n"""
     sout+="""#SBATCH --mail-user="""+param["SLURMemailaddress"]+"""\n"""
     sout+="""#SBATCH --mail-type="""+param["SLURMemailtype"]+"""\n"""
-    sout+="""#SBATCH --output="""+param["SLURMlog"]+"""slurm-"""+step+"""-%j.out\n"""
+    sout+="""#SBATCH --output="""+param["SLURMlog"]+"""slurm-%j-"""+step+""".out\n"""
     sout+="""#\n"""
     sout+="""#SBATCH --ntasks=1                                               #@@@ fill with appropriate value: here 1 task\n"""
     sout+="""#SBATCH --cpus-per-task=1                                        #@@@ fill with appropriate value: here 1 core per task\n"""
@@ -229,7 +229,7 @@ def MappingAndPreProcessing(param):
     sout+="""echo "************** Launching GATK RealignerTargetCreator ******************"\n"""
     sout+="""echo "@INPUT" $picard_bam\n"""
     sout+="""echo "@OUTPUT" $picard_bam".intervals"\n"""
-    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.1-1/GenomeAnalysisTK.jar \\\n"""
+    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.3-0/GenomeAnalysisTK.jar \\\n"""
     sout+="""    -T RealignerTargetCreator \\\n"""
     sout+="""    -nt $nthreads \\\n"""
     sout+="""    -R $ref \\\n"""
@@ -244,7 +244,7 @@ def MappingAndPreProcessing(param):
     sout+="""echo "@INPUT" $picard_bam\n"""
     sout+="""echo "@INPUT" $picard_bam".intervals"\n"""
     sout+="""echo "@OUTPUT" $indel_bam\n"""
-    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.1-1/GenomeAnalysisTK.jar \\\n"""
+    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.3-0/GenomeAnalysisTK.jar \\\n"""
     sout+="""    -T IndelRealigner \\\n"""
     sout+="""    -R $ref \\\n"""
     sout+="""    -I $picard_bam \\\n"""
@@ -263,7 +263,7 @@ def MappingAndPreProcessing(param):
     sout+="""echo "************** Launching GATK BaseRecalibrator 1st pass ******************"\n"""
     sout+="""echo "@INPUT" $indel_bam\n"""
     sout+="""echo "@OUTPUT" ${indel_bam/.bam/_recal1.grp} \n"""
-    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.1-1/GenomeAnalysisTK.jar \\\n"""
+    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.3-0/GenomeAnalysisTK.jar \\\n"""
     sout+="""    -T BaseRecalibrator \\\n"""
     sout+="""    -nct $ncores \\\n"""
     sout+="""    -I $indel_bam \\\n"""
@@ -281,7 +281,7 @@ def MappingAndPreProcessing(param):
     sout+="""echo "@INPUT" $indel_bam\n"""
     sout+="""echo "@INPUT" ${indel_bam/.bam/_recal1.grp} \n"""
     sout+="""echo "@OUTPUT" $bam_ready\n"""
-    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.1-1/GenomeAnalysisTK.jar \\\n"""
+    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.3-0/GenomeAnalysisTK.jar \\\n"""
     sout+="""    -T PrintReads \\\n"""
     sout+="""    -nct $ncores \\\n"""
     sout+="""    -R $ref \\\n"""
@@ -297,7 +297,7 @@ def MappingAndPreProcessing(param):
     sout+="""echo "@INPUT" $indel_bam\n"""
     sout+="""echo "@INPUT" ${indel_bam/.bam/_recal1.grp} \n"""
     sout+="""echo "@OUTPUT" ${indel_bam/.bam/_recal2.grp} \n"""
-    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.1-1/GenomeAnalysisTK.jar \\\n"""
+    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.3-0/GenomeAnalysisTK.jar \\\n"""
     sout+="""    -T BaseRecalibrator \\\n"""
     sout+="""    -BQSR ${indel_bam/.bam/_recal1.grp} \\\n"""
     sout+="""    -nct $ncores \\\n"""
@@ -317,7 +317,7 @@ def MappingAndPreProcessing(param):
     sout+="""echo "@INPUT" ${indel_bam/.bam/_recal2.grp} \n"""
     sout+="""echo "@OUTPUT" ${indel_bam/.bam/_BQSR.csv} \n"""
     sout+="""echo "@OUTPUT" ${indel_bam/.bam/_BQSR.pdf} \n"""
-    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.1-1/GenomeAnalysisTK.jar \\\n"""
+    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.3-0/GenomeAnalysisTK.jar \\\n"""
     sout+="""    -T AnalyzeCovariates \\\n"""
     sout+="""    -R $ref \\\n"""
     if param["AnalysisMode"]=="EXOME":
@@ -442,7 +442,7 @@ def QualityControl(param):
         sout+="""    TMP_DIR=$GLOBALSCRATCH\n"""
         sout+="""\n"""
         sout+="""echo '************** Launching GATK DiagnoseTargets ******************'\n"""
-        sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.1-1/GenomeAnalysisTK.jar \\\n"""
+        sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.3-0/GenomeAnalysisTK.jar \\\n"""
         sout+="""    -T DiagnoseTargets \\\n"""
         sout+="""    -R $ref \\\n"""
         sout+="""    -I $bam_ready \\\n"""
@@ -452,7 +452,7 @@ def QualityControl(param):
         if param.has_key("noPhoneHome"):
             sout=noPhoneHome(param,sout)
     sout+="""echo '************** Launching GATK DepthOfCoverage ******************'\n"""
-    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.1-1/GenomeAnalysisTK.jar \\\n"""
+    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.3-0/GenomeAnalysisTK.jar \\\n"""
     sout+="""    -T DepthOfCoverage \\\n"""
     sout+="""    -R $ref \\\n"""
     sout+="""    -I $bam_ready \\\n"""
@@ -493,7 +493,7 @@ def HaplotypeCaller(param):
     sout+="""echo 'BAM for HC:' $bam_ready\n"""
     sout+="""\n"""
     sout+="""echo '************** Launching GATK HaplotypeCaller ******************'\n"""
-    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.1-1/GenomeAnalysisTK.jar \\\n"""
+    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.3-0/GenomeAnalysisTK.jar \\\n"""
     sout+="""    -T HaplotypeCaller \\\n"""
     sout+="""    -R $ref \\\n"""
     if param["AnalysisMode"]=="EXOME":
@@ -539,7 +539,7 @@ def GenotypingAndRecalibrating(param):
     sout+="""gvcflist=$resdir"/gvcfs"$middfix".list"\n"""
     sout+="""\ls $resvcfdir/*.gvcf > $gvcflist\n"""
     sout+="""echo "************* Launching GATK GenotypeGVCFs ******************"\n"""
-    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.1-1/GenomeAnalysisTK.jar \\\n"""
+    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.3-0/GenomeAnalysisTK.jar \\\n"""
     sout+="""    -T GenotypeGVCFs \\\n"""
     sout+="""    -V $gvcflist \\\n"""
     if param["AnalysisMode"]=="EXOME":
@@ -552,7 +552,7 @@ def GenotypingAndRecalibrating(param):
     if param.has_key("noPhoneHome"):
         sout=noPhoneHome(param,sout)
     sout+="""echo "************** Launching GATK VariantRecalibrator -- SNP pass ******************"\n"""
-    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.1-1/GenomeAnalysisTK.jar \\\n"""
+    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.3-0/GenomeAnalysisTK.jar \\\n"""
     sout+="""    -T VariantRecalibrator \\\n"""
     sout+="""    -nt $nthreads \\\n"""
     sout+="""    -R $ref \\\n"""
@@ -573,7 +573,7 @@ def GenotypingAndRecalibrating(param):
     if param.has_key("noPhoneHome"):
         sout=noPhoneHome(param,sout)
     sout+="""echo "************** Launching GATK ApplyRecalibration -- SNP pass ******************"\n"""
-    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.1-1/GenomeAnalysisTK.jar \\\n"""
+    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.3-0/GenomeAnalysisTK.jar \\\n"""
     sout+="""    -T ApplyRecalibration \\\n"""
     sout+="""    -nt $nthreads \\\n"""
     sout+="""    -R $ref \\\n"""
@@ -589,7 +589,7 @@ def GenotypingAndRecalibrating(param):
     if param.has_key("noPhoneHome"):
         sout=noPhoneHome(param,sout)
     sout+="""echo "************** Launching GATK VariantRecalibrator -- INDEL pass ******************"\n"""
-    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.1-1/GenomeAnalysisTK.jar \\\n"""
+    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.3-0/GenomeAnalysisTK.jar \\\n"""
     sout+="""    -T VariantRecalibrator \\\n"""
     sout+="""    -nt $nthreads \\\n"""
     sout+="""    -R $ref \\\n"""
@@ -608,7 +608,7 @@ def GenotypingAndRecalibrating(param):
     if param.has_key("noPhoneHome"):
         sout=noPhoneHome(param,sout)
     sout+="""echo "************** Launching GATK ApplyRecalibration -- INDEL pass ******************"\n"""
-    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.1-1/GenomeAnalysisTK.jar \\\n"""
+    sout+="""$JAVAcustom $SRC/GenomeAnalysisTK-3.3-0/GenomeAnalysisTK.jar \\\n"""
     sout+="""    -T ApplyRecalibration \\\n"""
     sout+="""    -nt $nthreads \\\n"""
     sout+="""    -R $ref \\\n"""
