@@ -56,8 +56,8 @@ def header(param,step):
     sout+="""BWA=$BIN/bwa-0.7.7\n"""
     sout+="""SAMTOOLS=$BIN/samtools-1.1\n"""
     sout+="""SAMSTAT=$BIN/samstat-1.5\n"""
-    sout+="""PICARD=$JAVAcustom $SRC/picard-tools-1.78\n"""
-    sout+="""GATK=$JAVAcustom $SRC/GenomeAnalysisTK-3.3-0/GenomeAnalysisTK.jar\n"""
+    sout+="""PICARD=$JAVAcustom" "$SRC/picard-tools-1.78\n"""
+    sout+="""GATK=$JAVAcustom" "$SRC/GenomeAnalysisTK-3.3-0/GenomeAnalysisTK.jar\n"""
     if param.has_key("noPhoneHome"):
         sout+="""noET="""+param["noPhoneHome"]+"""\n"""
     sout+="""echo "BIN:" $BIN\n"""
