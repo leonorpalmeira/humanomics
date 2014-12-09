@@ -53,6 +53,7 @@ def header(param,step):
     sout+="""SRC=$GLOBALSCRATCH/src\n"""
     sout+="""JAVAcustom=$BIN"/java-1.7.0_71 -Xmx"$mem"g -XX:ParallelGCThreads="$ncores" -jar"\n"""
     sout+="""FASTQC=$BIN/fastqc_v0.11.2\n"""
+    sout+="""BWA=$BIN/bwa-0.7.7\n"""
     sout+="""SAMTOOLS=$BIN/samtools-1.1\n"""
     if param.has_key("noPhoneHome"):
         sout+="""noET="""+param["noPhoneHome"]+"""\n"""
@@ -188,7 +189,7 @@ def MappingAndPreProcessing(param):
     sout+="""echo "@INPUT" $query1\n"""
     sout+="""echo "@INPUT" $query2\n"""
     sout+="""echo "@OUTPUT" $bam\n"""
-    sout+="""$BIN/bwa-0.7.7 mem \\\n"""
+    sout+="""$BWA mem \\\n"""
     sout+="""    -t $ncores \\\n"""
     sout+="""    -M \\\n"""
     sout+="""    -R $RG \\\n"""
