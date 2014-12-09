@@ -52,6 +52,7 @@ def header(param,step):
     sout+="""BIN=$GLOBALSCRATCH/bin\n"""
     sout+="""SRC=$GLOBALSCRATCH/src\n"""
     sout+="""JAVAcustom=$BIN"/java-1.7.0_71 -Xmx"$mem"g -XX:ParallelGCThreads="$ncores" -jar"\n"""
+    sout+="""FASTQC=$BIN/fastqc_v0.11.2\n"""
     if param.has_key("noPhoneHome"):
         sout+="""noET="""+param["noPhoneHome"]+"""\n"""
     sout+="""echo "BIN:" $BIN\n"""
@@ -137,12 +138,12 @@ def FastQC(param):
     sout+="""echo "************** Launching FastQC report PE1 ******************"\n"""
     sout+="""echo "@INPUT" $query1\n"""
     sout+="""echo "@OUTPUT"\n"""
-    sout+="""$BIN/fastqc-0.10.1 --noextract --outdir=$fastqcdir $query1\n"""
+    sout+="""$FASTQC --noextract --outdir=$fastqcdir $query1\n"""
     sout+="""\n"""
     sout+="""echo "************** Launching FastQC report PE2 ******************"\n"""
     sout+="""echo "@INPUT" $query2\n"""
     sout+="""echo "@OUTPUT"\n"""
-    sout+="""$BIN/fastqc-0.10.1 --noextract --outdir=$fastqcdir $query2\n"""
+    sout+="""$FASTQC --noextract --outdir=$fastqcdir $query2\n"""
     sout+="""\n"""
     sout+="""echo "************** Finished ******************"\n"""
 
