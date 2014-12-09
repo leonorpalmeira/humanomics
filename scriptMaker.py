@@ -51,7 +51,7 @@ def header(param,step):
     sout+="""export PATH=$GLOBALSCRATCH/bin:$PATH # get R from $BIN (not from the system)\n"""
     sout+="""BIN=$GLOBALSCRATCH/bin\n"""
     sout+="""SRC=$GLOBALSCRATCH/src\n"""
-    sout+="""JAVAcustom=$BIN"/java-1.7.0_25 -Xmx"$mem"g -XX:ParallelGCThreads="$ncores" -jar"\n"""
+    sout+="""JAVAcustom=$BIN"/java-1.7.0_71 -Xmx"$mem"g -XX:ParallelGCThreads="$ncores" -jar"\n"""
     if param.has_key("noPhoneHome"):
         sout+="""noET="""+param["noPhoneHome"]+"""\n"""
     sout+="""echo "BIN:" $BIN\n"""
