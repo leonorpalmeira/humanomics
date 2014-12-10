@@ -639,7 +639,7 @@ def GenotypingAndRecalibrating(param):
     sout+="""    --everything \\\n"""
     sout+="""    --vcf \\\n"""
     sout+="""    --force_overwrite \\\n"""
-    sout+="""    --dir_cache $GLOBALSCRATCH/.vep \\\n"""
+    sout+="""    --dir_cache $GLOBALSCRATCH/genomes/homo_sapiens/hg19/annotations/VEP \\\n"""
     sout+="""    --offline \\\n"""
     sout+="""    --output_file $resvcfdir/$prefix$middfix_recal_final_VEP.vcf \\\n"""
     sout+="""    --stats_file $resvcfdir/$prefix$middfix_recal_final_VEP_summary.html \n"""
