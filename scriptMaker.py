@@ -53,7 +53,7 @@ def header(param,step):
     sout+="""SRC=$GLOBALSCRATCH/src\n"""
     sout+="""JAVAcustom=$BIN"/java-1.7.0_71 -Xmx"$mem"g -XX:ParallelGCThreads="$ncores" -jar"\n"""
     sout+="""FASTQC=$BIN/fastqc_v0.11.2\n"""
-    sout+="""BWA=$BIN/bwa-0.7.7\n"""
+    sout+="""BWA=$BIN/bwa-0.7.10\n"""
     sout+="""SAMTOOLS=$BIN/samtools-1.1\n"""
     sout+="""SAMSTAT=$BIN/samstat-1.5\n"""
     sout+="""PICARD=$JAVAcustom" "$SRC/picard-tools-1.78\n"""
