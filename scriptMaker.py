@@ -58,6 +58,9 @@ def header(param,step):
     sout+="""SAMSTAT=$BIN/samstat-1.5\n"""
     sout+="""PICARD=$JAVAcustom" "$SRC/picard-tools-1.78\n"""
     sout+="""GATK=$JAVAcustom" "$SRC/GenomeAnalysisTK-3.3-0/GenomeAnalysisTK.jar\n"""
+    sout+="""PERL=/usr/bin/perl\n"""
+    sout+="""VEP=$PERL" "$SRC/ensembl-tools-release-78/scripts/variant_effect_predictor/variant_effect_predictor.pl\n"""
+    sout+="""VCFSORTER=$BIN/vcfsorter.pl\n"""
     if param.has_key("noPhoneHome"):
         sout+="""noET="""+param["noPhoneHome"]+"""\n"""
     sout+="""echo "BIN:" $BIN\n"""
@@ -630,7 +633,7 @@ def GenotypingAndRecalibrating(param):
     if param.has_key("noPhoneHome"):
         sout=noPhoneHome(param,sout)
     sout+="""echo "************** Launching Variant Effect Predictor (VEP - Ensembl) annotation ******************"\n"""
-    sout+="""perl $SRC/ensembl-tools-release-77/scripts/variant_effect_predictor/variant_effect_predictor.pl \\\n"""
+    sout+="""$VEP \\\n"""
     sout+="""    -i $resvcfdir/$prefix$middfix_recal_final.vcf \\\n"""
     sout+="""    --cache \\\n"""
     sout+="""    --everything \\\n"""
@@ -642,7 +645,7 @@ def GenotypingAndRecalibrating(param):
     sout+="""    --stats_file $resvcfdir/$prefix$middfix_recal_final_VEP_summary.html \n"""
     sout+="""\n"""
     sout+="""randomNumber=$RANDOM \n"""
-    sout+="""$SRC/vcfsorter.pl $dict $resvcfdir/$prefix$middfix_recal_final_VEP.vcf > swap_$randomNumber \n"""
+    sout+="""$VCFSORTER $dict $resvcfdir/$prefix$middfix_recal_final_VEP.vcf > swap_$randomNumber \n"""
     sout+="""mv swap_$randomNumber $resvcfdir/$prefix$middfix_recal_final_VEP.vcf \n"""
     sout+="""\n"""
     sout+="""echo "************** Finished ******************"\n"""
