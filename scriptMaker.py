@@ -1,4 +1,4 @@
-
+1;3201;0c
 import os
 
 def noPhoneHome(param,sout):
@@ -241,8 +241,8 @@ def MappingAndPreProcessing(param):
     sout+="""    -R $ref \\\n"""
     sout+="""    -I $picard_bam \\\n"""
     sout+="""    -o ${picard_bam/.bam/.intervals} \\\n"""
-    sout+="""    --known $vcfdir"/1000G_phase1.indels.hg19_sorted.vcf.gz" \\\n"""
-    sout+="""    --known $vcfdir"/Mills_and_1000G_gold_standard.indels.hg19_sorted.vcf.gz"\n"""
+    sout+="""    --known $vcfdir"/1000G_phase1.indels.hg19.sites.vcf.gz" \\\n"""
+    sout+="""    --known $vcfdir"/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz"\n"""
     sout+="""\n"""
     if param.has_key("noPhoneHome"):
         sout=noPhoneHome(param,sout)
@@ -256,8 +256,8 @@ def MappingAndPreProcessing(param):
     sout+="""    -I $picard_bam \\\n"""
     sout+="""    -targetIntervals ${picard_bam/.bam/.intervals} \\\n"""
     sout+="""    -o $indel_bam \\\n"""
-    sout+="""    --knownAlleles $vcfdir"/1000G_phase1.indels.hg19_sorted.vcf.gz" \\\n"""
-    sout+="""    --knownAlleles $vcfdir"/Mills_and_1000G_gold_standard.indels.hg19_sorted.vcf.gz"\n"""
+    sout+="""    --knownAlleles $vcfdir"/1000G_phase1.indels.hg19.sites.vcf.gz" \\\n"""
+    sout+="""    --knownAlleles $vcfdir"/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz"\n"""
     sout+="""\n"""
     if param.has_key("noPhoneHome"):
         sout=noPhoneHome(param,sout)
@@ -276,9 +276,9 @@ def MappingAndPreProcessing(param):
     sout+="""    -R $ref \\\n"""
     if param["AnalysisMode"]=="EXOME":
         sout+="""    -L $targets \\\n"""
-    sout+="""    -knownSites $vcfdir"/dbsnp_137.hg19_sorted.vcf.gz" \\\n"""
-    sout+="""    -knownSites $vcfdir"/Mills_and_1000G_gold_standard.indels.hg19_sorted.vcf.gz" \\\n"""
-    sout+="""    -knownSites $vcfdir"/1000G_phase1.indels.hg19_sorted.vcf.gz" \\\n"""
+    sout+="""    -knownSites $vcfdir"/dbsnp_138.hg19.vcf.gz" \\\n"""
+    sout+="""    -knownSites $vcfdir"/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz" \\\n"""
+    sout+="""    -knownSites $vcfdir"/1000G_phase1.indels.hg19.sites.vcf.gz" \\\n"""
     sout+="""    -o ${indel_bam/.bam/_recal1.grp} \n"""
     sout+="""\n"""
     if param.has_key("noPhoneHome"):
@@ -311,9 +311,9 @@ def MappingAndPreProcessing(param):
     sout+="""    -R $ref \\\n"""
     if param["AnalysisMode"]=="EXOME":
         sout+="""    -L $targets \\\n"""
-    sout+="""    -knownSites $vcfdir"/dbsnp_137.hg19_sorted.vcf.gz" \\\n"""
-    sout+="""    -knownSites $vcfdir"/Mills_and_1000G_gold_standard.indels.hg19_sorted.vcf.gz" \\\n"""
-    sout+="""    -knownSites $vcfdir"/1000G_phase1.indels.hg19_sorted.vcf.gz" \\\n"""
+    sout+="""    -knownSites $vcfdir"/dbsnp_138.hg19.vcf.gz" \\\n"""
+    sout+="""    -knownSites $vcfdir"/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz" \\\n"""
+    sout+="""    -knownSites $vcfdir"/1000G_phase1.indels.hg19.sites.vcf.gz" \\\n"""
     sout+="""    -o ${indel_bam/.bam/_recal2.grp} \n"""
     sout+="""\n"""
     if param.has_key("noPhoneHome"):
@@ -506,7 +506,7 @@ def HaplotypeCaller(param):
         sout+="""    -L $targets \\\n"""
     sout+="""    -I $bam_ready \\\n"""
     sout+="""    -o ${resvcfdir}$( echo $bam_ready | sed -e 's#'$bamdir'##; s#.bam##' )${middfix}".gvcf" \\\n"""
-    sout+="""    --dbsnp $vcfdir'/dbsnp_137.hg19_sorted.vcf.gz' \\\n"""
+    sout+="""    --dbsnp $vcfdir'/dbsnp_138.hg19.vcf.gz' \\\n"""
     sout+="""    --emitRefConfidence GVCF \\\n"""
     sout+="""    --variant_index_type LINEAR \\\n"""
     sout+="""    --variant_index_parameter 128000 \\\n"""
@@ -553,7 +553,7 @@ def GenotypingAndRecalibrating(param):
     sout+="""    -o $resvcfdir/$prefix$middfix.vcf \\\n"""
     sout+="""    -R $ref \\\n"""
     sout+="""    -nt $nthreads \\\n"""
-    sout+="""    --dbsnp $vcfdir"/dbsnp_137.hg19_sorted.vcf.gz" \n"""
+    sout+="""    --dbsnp $vcfdir"/dbsnp_138.hg19.vcf.gz" \n"""
     sout+="""\n"""
     if param.has_key("noPhoneHome"):
         sout=noPhoneHome(param,sout)
@@ -565,10 +565,10 @@ def GenotypingAndRecalibrating(param):
     sout+="""    -input $resvcfdir/$prefix$middfix.vcf \\\n"""
     if param["AnalysisMode"]=="EXOME":
         sout+="""    -L $targets \\\n"""
-    sout+="""    -resource:hapmap,VCF,known=false,training=true,truth=true,prior=15.0 $vcfdir"/hapmap_3.3.hg19_sorted.vcf.gz" \\\n"""
-    sout+="""    -resource:omni,VCF,known=false,training=true,truth=true,prior=12.0 $vcfdir"/1000G_omni2.5.hg19_sorted.vcf.gz" \\\n"""
-    sout+="""    -resource:1000G,known=false,training=true,truth=false,prior=10.0 $vcfdir"/1000G_phase1.snps.high_confidence.hg19_sorted.vcf.gz" \\\n"""
-    sout+="""    -resource:dbsnp,VCF,known=true,training=false,truth=false,prior=2.0 $vcfdir"/dbsnp_137.hg19_sorted.vcf.gz" \\\n"""
+    sout+="""    -resource:hapmap,VCF,known=false,training=true,truth=true,prior=15.0 $vcfdir"/hapmap_3.3.hg19.sites.vcf.gz" \\\n"""
+    sout+="""    -resource:omni,VCF,known=false,training=true,truth=true,prior=12.0 $vcfdir"/1000G_omni2.5.hg19.sites.vcf.gz" \\\n"""
+    sout+="""    -resource:1000G,known=false,training=true,truth=false,prior=10.0 $vcfdir"/1000G_phase1.snps.high_confidence.hg19.sites.vcf.gz" \\\n"""
+    sout+="""    -resource:dbsnp,VCF,known=true,training=false,truth=false,prior=2.0 $vcfdir"/dbsnp_138.hg19.vcf.gz" \\\n"""
     sout+="""    -an QD -an MQRankSum -an ReadPosRankSum -an FS \\\n"""
     sout+="""    -mode SNP \\\n"""
     sout+="""    -recalFile $resvcfdir/$prefix$middfix.recal_snps \\\n"""
@@ -602,8 +602,8 @@ def GenotypingAndRecalibrating(param):
     sout+="""    -input $resvcfdir/$prefix$middfix_recal_step1.vcf \\\n"""
     if param["AnalysisMode"]=="EXOME":
         sout+="""    -L $targets \\\n"""
-    sout+="""    -resource:mills,VCF,known=false,training=true,truth=true,prior=12.0 $vcfdir"/Mills_and_1000G_gold_standard.indels.hg19_sorted.vcf.gz" \\\n"""
-    sout+="""    -resource:dbsnp,VCF,known=true,training=false,truth=false,prior=2.0 $vcfdir"/dbsnp_137.hg19_sorted.vcf.gz" \\\n"""
+    sout+="""    -resource:mills,VCF,known=false,training=true,truth=true,prior=12.0 $vcfdir"/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz" \\\n"""
+    sout+="""    -resource:dbsnp,VCF,known=true,training=false,truth=false,prior=2.0 $vcfdir"/dbsnp_138.hg19.vcf.gz" \\\n"""
     sout+="""    -an FS -an ReadPosRankSum -an MQRankSum \\\n"""
     sout+="""    -mode INDEL \\\n"""
     sout+="""    -recalFile $resvcfdir/$prefix$middfix.recal_indels \\\n"""
