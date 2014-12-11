@@ -86,6 +86,9 @@ def header(param,step):
     sout+="""vcfdir=$GLOBALSCRATCH/genomes/homo_sapiens/hg19/variation\n"""
     if param["AnalysisMode"]=="EXOME":
         sout+="""echo "*************** EXOME Analysis Mode *****************"\n"""
+    elif param["AnalysisMode"]=="PANEL":
+        sout+="""echo "*************** PANEL Analysis Mode *****************"\n"""
+    if param["AnalysisMode"]=="EXOME" or param["AnalysisMode"]=="PANEL":
         sout+="""targets="""+param["TargetFile"]+""" #@@@ fill this in\n"""
         sout+="""baitsPicard="""+param["BaitsFilePicard"]+""" #@@@ fill this in\n"""
         sout+="""targetsPicard="""+param["TargetFilePicard"]+""" #@@@ fill this in\n"""
@@ -277,7 +280,7 @@ def MappingAndPreProcessing(param):
     sout+="""    -nct $ncores \\\n"""
     sout+="""    -I $indel_bam \\\n"""
     sout+="""    -R $ref \\\n"""
-    if param["AnalysisMode"]=="EXOME":
+    if param["AnalysisMode"]=="EXOME" or param["AnalysisMode"]=="PANEL":
         sout+="""    -L $targets \\\n"""
     sout+="""    -knownSites $vcfdir"/dbsnp_138.hg19.vcf.gz" \\\n"""
     sout+="""    -knownSites $vcfdir"/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz" \\\n"""
@@ -294,7 +297,7 @@ def MappingAndPreProcessing(param):
     sout+="""    -T PrintReads \\\n"""
     sout+="""    -nct $ncores \\\n"""
     sout+="""    -R $ref \\\n"""
-    if param["AnalysisMode"]=="EXOME":
+    if param["AnalysisMode"]=="EXOME" or param["AnalysisMode"]=="PANEL":
         sout+="""    -L $targets \\\n"""
     sout+="""    -I $indel_bam \\\n"""
     sout+="""    -BQSR ${indel_bam/.bam/_recal1.grp} \\\n"""
@@ -312,7 +315,7 @@ def MappingAndPreProcessing(param):
     sout+="""    -nct $ncores \\\n"""
     sout+="""    -I $indel_bam \\\n"""
     sout+="""    -R $ref \\\n"""
-    if param["AnalysisMode"]=="EXOME":
+    if param["AnalysisMode"]=="EXOME" or param["AnalysisMode"]=="PANEL":
         sout+="""    -L $targets \\\n"""
     sout+="""    -knownSites $vcfdir"/dbsnp_138.hg19.vcf.gz" \\\n"""
     sout+="""    -knownSites $vcfdir"/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz" \\\n"""
@@ -329,7 +332,7 @@ def MappingAndPreProcessing(param):
     sout+="""$GATK \\\n"""
     sout+="""    -T AnalyzeCovariates \\\n"""
     sout+="""    -R $ref \\\n"""
-    if param["AnalysisMode"]=="EXOME":
+    if param["AnalysisMode"]=="EXOME" or param["AnalysisMode"]=="PANEL":
         sout+="""    -L $targets \\\n"""
     sout+="""    -before ${indel_bam/.bam/_recal1.grp} \\\n"""
     sout+="""    -after ${indel_bam/.bam/_recal2.grp} \\\n"""
@@ -437,7 +440,7 @@ def QualityControl(param):
     sout+="""    ${bam_ready/.bam/.tdf},${bam_ready/.bam/.wig} \\\n"""
     sout+="""    $refname\n"""
     sout+="""\n"""
-    if param["AnalysisMode"]=="EXOME":
+    if param["AnalysisMode"]=="EXOME" or param["AnalysisMode"]=="PANEL":
         sout+="""# WARNING: careful with the manifest and target files here!\n"""
         sout+="""echo '************** Launching Picard CalculateHSMetrics ******************'\n"""
         sout+="""$PICARD/CalculateHsMetrics.jar \\\n"""
@@ -465,7 +468,7 @@ def QualityControl(param):
     sout+="""    -T DepthOfCoverage \\\n"""
     sout+="""    -R $ref \\\n"""
     sout+="""    -I $bam_ready \\\n"""
-    if param["AnalysisMode"]=="EXOME":
+    if param["AnalysisMode"]=="EXOME" or param["AnalysisMode"]=="PANEL":
         sout+="""    -L $targets\\\n"""
     sout+="""    -o ${bam_ready/.bam/.cov} \\\n"""
     sout+="""    -pt sample \\\n"""
@@ -505,7 +508,7 @@ def HaplotypeCaller(param):
     sout+="""$GATK \\\n"""
     sout+="""    -T HaplotypeCaller \\\n"""
     sout+="""    -R $ref \\\n"""
-    if param["AnalysisMode"]=="EXOME":
+    if param["AnalysisMode"]=="EXOME" or param["AnalysisMode"]=="PANEL":
         sout+="""    -L $targets \\\n"""
     sout+="""    -I $bam_ready \\\n"""
     sout+="""    -o ${resvcfdir}$( echo $bam_ready | sed -e 's#'$bamdir'##; s#.bam##' )${middfix}".gvcf" \\\n"""
@@ -551,87 +554,137 @@ def GenotypingAndRecalibrating(param):
     sout+="""$GATK \\\n"""
     sout+="""    -T GenotypeGVCFs \\\n"""
     sout+="""    -V $gvcflist \\\n"""
-    if param["AnalysisMode"]=="EXOME":
+    if param["AnalysisMode"]=="EXOME" or param["AnalysisMode"]=="PANEL":
         sout+="""    -L $targets\\\n"""
     sout+="""    -o $resvcfdir/$prefix$middfix.vcf \\\n"""
     sout+="""    -R $ref \\\n"""
     sout+="""    -nt $nthreads \\\n"""
     sout+="""    --dbsnp $vcfdir"/dbsnp_138.hg19.vcf.gz" \n"""
+    if param["AnalysisMode"]=="PANEL":
+        sout+="""    -A MappingQualityRankSumTest \\\n"""
+        sout+="""    -A ReadPosRankSumTest \\\n"""
     sout+="""\n"""
     if param.has_key("noPhoneHome"):
         sout=noPhoneHome(param,sout)
-    sout+="""echo "************** Launching GATK VariantRecalibrator -- SNP pass ******************"\n"""
-    sout+="""$GATK \\\n"""
-    sout+="""    -T VariantRecalibrator \\\n"""
-    sout+="""    -nt $nthreads \\\n"""
-    sout+="""    -R $ref \\\n"""
-    sout+="""    -input $resvcfdir/$prefix$middfix.vcf \\\n"""
-    if param["AnalysisMode"]=="EXOME":
+    if param["AnalysisMode"]=="EXOME" or param["AnalysisMode"]=="GENOME":
+        sout+="""echo "************** Launching GATK VariantRecalibrator -- SNP pass ******************"\n"""
+        sout+="""$GATK \\\n"""
+        sout+="""    -T VariantRecalibrator \\\n"""
+        sout+="""    -nt $nthreads \\\n"""
+        sout+="""    -R $ref \\\n"""
+        sout+="""    -input $resvcfdir/$prefix$middfix.vcf \\\n"""
+        if param["AnalysisMode"]=="EXOME":
+            sout+="""    -L $targets \\\n"""
+        sout+="""    -resource:hapmap,VCF,known=false,training=true,truth=true,prior=15.0 $vcfdir"/hapmap_3.3.hg19.sites.vcf.gz" \\\n"""
+        sout+="""    -resource:omni,VCF,known=false,training=true,truth=true,prior=12.0 $vcfdir"/1000G_omni2.5.hg19.sites.vcf.gz" \\\n"""
+        sout+="""    -resource:1000G,known=false,training=true,truth=false,prior=10.0 $vcfdir"/1000G_phase1.snps.high_confidence.hg19.sites.vcf.gz" \\\n"""
+        sout+="""    -resource:dbsnp,VCF,known=true,training=false,truth=false,prior=2.0 $vcfdir"/dbsnp_138.hg19.vcf.gz" \\\n"""
+        sout+="""    -an QD -an MQRankSum -an ReadPosRankSum -an FS \\\n"""
+        sout+="""    -mode SNP \\\n"""
+        sout+="""    -recalFile $resvcfdir/$prefix$middfix.recal_snps \\\n"""
+        sout+="""    -tranchesFile $resvcfdir/$prefix$middfix.tranches_snps \\\n"""
+        sout+="""    -rscriptFile $resvcfdir/$prefix$middfix_VQSR_SNP.R \\\n"""
+        sout+="""    --maxGaussians 4\n"""
+        sout+="""\n"""
+        if param.has_key("noPhoneHome"):
+            sout=noPhoneHome(param,sout)
+        sout+="""echo "************** Launching GATK ApplyRecalibration -- SNP pass ******************"\n"""
+        sout+="""$GATK \\\n"""
+        sout+="""    -T ApplyRecalibration \\\n"""
+        sout+="""    -nt $nthreads \\\n"""
+        sout+="""    -R $ref \\\n"""
+        sout+="""    -input $resvcfdir/$prefix$middfix.vcf \\\n"""
+        if param["AnalysisMode"]=="EXOME" or param["AnalysisMode"]=="PANEL":
+            sout+="""    -L $targets \\\n"""
+        sout+="""    --ts_filter_level 99.0 \\\n"""
+        sout+="""    -recalFile $resvcfdir/$prefix$middfix.recal_snps \\\n"""
+        sout+="""    -tranchesFile $resvcfdir/$prefix$middfix.tranches_snps \\\n"""
+        sout+="""    -mode SNP \\\n"""
+        sout+="""    -o $resvcfdir/$prefix$middfix_recal_step1.vcf \n"""
+        sout+="""\n"""
+        if param.has_key("noPhoneHome"):
+            sout=noPhoneHome(param,sout)
+        sout+="""echo "************** Launching GATK VariantRecalibrator -- INDEL pass ******************"\n"""
+        sout+="""$GATK \\\n"""
+        sout+="""    -T VariantRecalibrator \\\n"""
+        sout+="""    -nt $nthreads \\\n"""
+        sout+="""    -R $ref \\\n"""
+        sout+="""    -input $resvcfdir/$prefix$middfix_recal_step1.vcf \\\n"""
+        if param["AnalysisMode"]=="EXOME":
+            sout+="""    -L $targets \\\n"""
+        sout+="""    -resource:mills,VCF,known=false,training=true,truth=true,prior=12.0 $vcfdir"/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz" \\\n"""
+        sout+="""    -resource:dbsnp,VCF,known=true,training=false,truth=false,prior=2.0 $vcfdir"/dbsnp_138.hg19.vcf.gz" \\\n"""
+        sout+="""    -an FS -an ReadPosRankSum -an MQRankSum \\\n"""
+        sout+="""    -mode INDEL \\\n"""
+        sout+="""    -recalFile $resvcfdir/$prefix$middfix.recal_indels \\\n"""
+        sout+="""    -tranchesFile $resvcfdir/$prefix$middfix.tranches_indels \\\n"""
+        sout+="""    -rscriptFile $resvcfdir/$prefix$middfix_VQSR_INDEL.R \\\n"""
+        sout+="""    --maxGaussians 4\n"""
+        sout+="""\n"""
+        if param.has_key("noPhoneHome"):
+            sout=noPhoneHome(param,sout)
+        sout+="""echo "************** Launching GATK ApplyRecalibration -- INDEL pass ******************"\n"""
+        sout+="""$GATK \\\n"""
+        sout+="""    -T ApplyRecalibration \\\n"""
+        sout+="""    -nt $nthreads \\\n"""
+        sout+="""    -R $ref \\\n"""
+        sout+="""    -input $resvcfdir/$prefix$middfix_recal_step1.vcf \\\n"""
+        if param["AnalysisMode"]=="EXOME":
+            sout+="""    -L $targets \\\n"""
+        sout+="""    --ts_filter_level 99.0 \\\n"""
+        sout+="""    -tranchesFile $resvcfdir/$prefix$middfix.tranches_indels \\\n"""
+        sout+="""    -recalFile $resvcfdir/$prefix$middfix.recal_indels \\\n"""
+        sout+="""    -mode INDEL \\\n"""
+        sout+="""    -o $resvcfdir/$prefix$middfix_recal_final.vcf \n"""
+        sout+="""\n"""
+        if param.has_key("noPhoneHome"):
+            sout=noPhoneHome(param,sout)
+    elif param["AnalysisMode"]=="PANEL":
+
+
+
+
+        sout+="""echo "************* Extract SNPs ******************"\n"""
+        sout+="""$GATK \\\n"""
+        sout+="""    -T SelectVariants \\\n"""
+        sout+="""    -R $ref \\\n"""
+        sout+="""    -V $resvcfdir/$prefix$middfix.vcf \\\n"""
         sout+="""    -L $targets \\\n"""
-    sout+="""    -resource:hapmap,VCF,known=false,training=true,truth=true,prior=15.0 $vcfdir"/hapmap_3.3.hg19.sites.vcf.gz" \\\n"""
-    sout+="""    -resource:omni,VCF,known=false,training=true,truth=true,prior=12.0 $vcfdir"/1000G_omni2.5.hg19.sites.vcf.gz" \\\n"""
-    sout+="""    -resource:1000G,known=false,training=true,truth=false,prior=10.0 $vcfdir"/1000G_phase1.snps.high_confidence.hg19.sites.vcf.gz" \\\n"""
-    sout+="""    -resource:dbsnp,VCF,known=true,training=false,truth=false,prior=2.0 $vcfdir"/dbsnp_138.hg19.vcf.gz" \\\n"""
-    sout+="""    -an QD -an MQRankSum -an ReadPosRankSum -an FS \\\n"""
-    sout+="""    -mode SNP \\\n"""
-    sout+="""    -recalFile $resvcfdir/$prefix$middfix.recal_snps \\\n"""
-    sout+="""    -tranchesFile $resvcfdir/$prefix$middfix.tranches_snps \\\n"""
-    sout+="""    -rscriptFile $resvcfdir/$prefix$middfix_VQSR_SNP.R \\\n"""
-    sout+="""    --maxGaussians 4\n"""
-    sout+="""\n"""
-    if param.has_key("noPhoneHome"):
-        sout=noPhoneHome(param,sout)
-    sout+="""echo "************** Launching GATK ApplyRecalibration -- SNP pass ******************"\n"""
-    sout+="""$GATK \\\n"""
-    sout+="""    -T ApplyRecalibration \\\n"""
-    sout+="""    -nt $nthreads \\\n"""
-    sout+="""    -R $ref \\\n"""
-    sout+="""    -input $resvcfdir/$prefix$middfix.vcf \\\n"""
-    if param["AnalysisMode"]=="EXOME":
+        sout+="""    -selectType SNP \\\n"""
+        sout+="""    -nt $nthreads \\\n"""
+        sout+="""    -o $resvcfdir/$prefix$middfix"_snps.vcf \n"""
+        sout+="""\n"""
+        sout+="""echo "************* Hard-filter SNPs ******************"\n"""
+        sout+="""$GATK \\\n"""
+        sout+="""    -T VariantFiltration \\\n"""
+        sout+="""    -R $ref \\\n"""
+        sout+="""    -V $resvcfdir/$prefix$middfix"_snps.vcf" \\\n"""
+        sout+="""    --filterExpression "QD < 2.0 || FS > 60.0 || MQ < 40.0 || MappingQuali\\\n"""
+        sout+="""tyRankSum < -12.5 || ReadPosRankSum < -8.0" \\\n"""
+        sout+="""    --filterName "my_snp_filter" \\\n"""
+        sout+="""    -nt $nthreads \\\n"""
+        sout+="""    -o $resvcfdir/$prefix$middfix"_snps_HardFiltered.vcf" \n"""
+        sout+="""\n"""
+        sout+="""echo "************* Extract INDELs ******************"\n"""
+        sout+="""$GATK \\\n"""
+        sout+="""    -T SelectVariants \\\n"""
+        sout+="""    -R $ref \\\n"""
+        sout+="""    -V $resvcfdir/$prefix$middfix.vcf \\\n"""
         sout+="""    -L $targets \\\n"""
-    sout+="""    --ts_filter_level 99.0 \\\n"""
-    sout+="""    -recalFile $resvcfdir/$prefix$middfix.recal_snps \\\n"""
-    sout+="""    -tranchesFile $resvcfdir/$prefix$middfix.tranches_snps \\\n"""
-    sout+="""    -mode SNP \\\n"""
-    sout+="""    -o $resvcfdir/$prefix$middfix_recal_step1.vcf \n"""
-    sout+="""\n"""
-    if param.has_key("noPhoneHome"):
-        sout=noPhoneHome(param,sout)
-    sout+="""echo "************** Launching GATK VariantRecalibrator -- INDEL pass ******************"\n"""
-    sout+="""$GATK \\\n"""
-    sout+="""    -T VariantRecalibrator \\\n"""
-    sout+="""    -nt $nthreads \\\n"""
-    sout+="""    -R $ref \\\n"""
-    sout+="""    -input $resvcfdir/$prefix$middfix_recal_step1.vcf \\\n"""
-    if param["AnalysisMode"]=="EXOME":
-        sout+="""    -L $targets \\\n"""
-    sout+="""    -resource:mills,VCF,known=false,training=true,truth=true,prior=12.0 $vcfdir"/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz" \\\n"""
-    sout+="""    -resource:dbsnp,VCF,known=true,training=false,truth=false,prior=2.0 $vcfdir"/dbsnp_138.hg19.vcf.gz" \\\n"""
-    sout+="""    -an FS -an ReadPosRankSum -an MQRankSum \\\n"""
-    sout+="""    -mode INDEL \\\n"""
-    sout+="""    -recalFile $resvcfdir/$prefix$middfix.recal_indels \\\n"""
-    sout+="""    -tranchesFile $resvcfdir/$prefix$middfix.tranches_indels \\\n"""
-    sout+="""    -rscriptFile $resvcfdir/$prefix$middfix_VQSR_INDEL.R \\\n"""
-    sout+="""    --maxGaussians 4\n"""
-    sout+="""\n"""
-    if param.has_key("noPhoneHome"):
-        sout=noPhoneHome(param,sout)
-    sout+="""echo "************** Launching GATK ApplyRecalibration -- INDEL pass ******************"\n"""
-    sout+="""$GATK \\\n"""
-    sout+="""    -T ApplyRecalibration \\\n"""
-    sout+="""    -nt $nthreads \\\n"""
-    sout+="""    -R $ref \\\n"""
-    sout+="""    -input $resvcfdir/$prefix$middfix_recal_step1.vcf \\\n"""
-    if param["AnalysisMode"]=="EXOME":
-        sout+="""    -L $targets \\\n"""
-    sout+="""    --ts_filter_level 99.0 \\\n"""
-    sout+="""    -tranchesFile $resvcfdir/$prefix$middfix.tranches_indels \\\n"""
-    sout+="""    -recalFile $resvcfdir/$prefix$middfix.recal_indels \\\n"""
-    sout+="""    -mode INDEL \\\n"""
-    sout+="""    -o $resvcfdir/$prefix$middfix_recal_final.vcf \n"""
-    sout+="""\n"""
-    if param.has_key("noPhoneHome"):
-        sout=noPhoneHome(param,sout)
+        sout+="""    -selectType INDEL \\\n"""
+        sout+="""    -nt $nthreads \\\n"""
+        sout+="""    -o $resvcfdir/$prefix$middfix"_indels.vcf" \n"""
+        sout+="""\n"""
+        sout+="""echo "************* Hard-filter INDELs ******************"\n"""
+        sout+="""$GATK \\\n"""
+        sout+="""    -T VariantFiltration \\\n"""
+        sout+="""    -R $ref \\\n"""
+        sout+="""    -V $resvcfdir/$prefix$middfix"_indels.vcf" \\\n"""
+        sout+="""    --filterExpression "QD < 2.0 || FS > 200.0 || ReadPosRankSum < -20.0" \\\n"""
+        sout+="""    --filterName "my_indel_filter" \\\n"""
+        sout+="""    -nt $nthreads \\\n"""
+        sout+="""    -o $resvcfdir/$prefix$middfix"_indels_HardFiltered.vcf" \n"""
+        sout+="""\n"""
     sout+="""echo "************** Launching Variant Effect Predictor (VEP - Ensembl) annotation ******************"\n"""
     sout+="""$VEP \\\n"""
     sout+="""    -i $resvcfdir/$prefix$middfix_recal_final.vcf \\\n"""
