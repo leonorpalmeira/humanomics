@@ -500,7 +500,7 @@ def HaplotypeCaller(param):
     out=param["ScriptsDir"]+"2b--HaplotypeCaller.bash"
 
     sout=header(param,"gvcf")
-    sout+="""middfix='_HC3.1' #@@@ fill this in\n"""
+    sout+="""middfix='_HC3.3' #@@@ fill this in\n"""
     sout+="""\n"""
     sout+="""echo 'BAM for HC:' $bam_ready\n"""
     sout+="""\n"""
@@ -543,7 +543,7 @@ def GenotypingAndRecalibrating(param):
     out=param["ScriptsDir"]+"3--GenotypingAndRecalibrating.bash"
     sout=header(param,"vcf")
     sout+="""\n"""
-    sout+="""middfix='_HC3.1'\n"""
+    sout+="""middfix='_HC3.3'\n"""
     sout+="""\n"""
     sout+="""cd $resvcfdir\n"""
     sout+="""prefix='all'\n"""
