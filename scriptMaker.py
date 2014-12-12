@@ -550,6 +550,7 @@ def GenotypingAndRecalibrating(param):
     sout+="""\n"""
     sout+="""gvcflist=$resdir"/gvcfs"$middfix".list"\n"""
     sout+="""\ls $resvcfdir/*.gvcf > $gvcflist\n"""
+    sout+="""\n"""
     sout+="""echo "************* Launching GATK GenotypeGVCFs ******************"\n"""
     sout+="""$GATK \\\n"""
     sout+="""    -T GenotypeGVCFs \\\n"""
