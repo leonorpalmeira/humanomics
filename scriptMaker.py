@@ -584,7 +584,7 @@ def GenotypingAndRecalibrating(param):
         sout+="""    -mode SNP \\\n"""
         sout+="""    -recalFile $resvcfdir/$prefix$middfix.recal_snps \\\n"""
         sout+="""    -tranchesFile $resvcfdir/$prefix$middfix.tranches_snps \\\n"""
-        sout+="""    -rscriptFile $resvcfdir/$prefix$middfix_VQSR_SNP.R \\\n"""
+        sout+="""    -rscriptFile $resvcfdir/$prefix$middfix"_VQSR_SNP.R" \\\n"""
         sout+="""    --maxGaussians 4\n"""
         sout+="""\n"""
         if param.has_key("noPhoneHome"):
@@ -601,7 +601,7 @@ def GenotypingAndRecalibrating(param):
         sout+="""    -recalFile $resvcfdir/$prefix$middfix.recal_snps \\\n"""
         sout+="""    -tranchesFile $resvcfdir/$prefix$middfix.tranches_snps \\\n"""
         sout+="""    -mode SNP \\\n"""
-        sout+="""    -o $resvcfdir/$prefix$middfix_recal_step1.vcf \n"""
+        sout+="""    -o $resvcfdir/$prefix$middfix"_recal_step1.vcf" \n"""
         sout+="""\n"""
         if param.has_key("noPhoneHome"):
             sout=noPhoneHome(param,sout)
@@ -610,7 +610,7 @@ def GenotypingAndRecalibrating(param):
         sout+="""    -T VariantRecalibrator \\\n"""
         sout+="""    -nt $nthreads \\\n"""
         sout+="""    -R $ref \\\n"""
-        sout+="""    -input $resvcfdir/$prefix$middfix_recal_step1.vcf \\\n"""
+        sout+="""    -input $resvcfdir/$prefix$middfix"_recal_step1.vcf" \\\n"""
         if param["AnalysisMode"]=="EXOME":
             sout+="""    -L $targets \\\n"""
         sout+="""    -resource:mills,VCF,known=false,training=true,truth=true,prior=12.0 $vcfdir"/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz" \\\n"""
@@ -619,7 +619,7 @@ def GenotypingAndRecalibrating(param):
         sout+="""    -mode INDEL \\\n"""
         sout+="""    -recalFile $resvcfdir/$prefix$middfix.recal_indels \\\n"""
         sout+="""    -tranchesFile $resvcfdir/$prefix$middfix.tranches_indels \\\n"""
-        sout+="""    -rscriptFile $resvcfdir/$prefix$middfix_VQSR_INDEL.R \\\n"""
+        sout+="""    -rscriptFile $resvcfdir/$prefix$middfix"_VQSR_INDEL.R" \\\n"""
         sout+="""    --maxGaussians 4\n"""
         sout+="""\n"""
         if param.has_key("noPhoneHome"):
@@ -629,14 +629,14 @@ def GenotypingAndRecalibrating(param):
         sout+="""    -T ApplyRecalibration \\\n"""
         sout+="""    -nt $nthreads \\\n"""
         sout+="""    -R $ref \\\n"""
-        sout+="""    -input $resvcfdir/$prefix$middfix_recal_step1.vcf \\\n"""
+        sout+="""    -input $resvcfdir/$prefix$middfix"_recal_step1.vcf" \\\n"""
         if param["AnalysisMode"]=="EXOME":
             sout+="""    -L $targets \\\n"""
         sout+="""    --ts_filter_level 99.0 \\\n"""
         sout+="""    -tranchesFile $resvcfdir/$prefix$middfix.tranches_indels \\\n"""
         sout+="""    -recalFile $resvcfdir/$prefix$middfix.recal_indels \\\n"""
         sout+="""    -mode INDEL \\\n"""
-        sout+="""    -o $resvcfdir/$prefix$middfix_recal_final.vcf \n"""
+        sout+="""    -o $resvcfdir/$prefix$middfix"_recal_final.vcf" \n"""
         sout+="""\n"""
         if param.has_key("noPhoneHome"):
             sout=noPhoneHome(param,sout)
@@ -687,19 +687,19 @@ def GenotypingAndRecalibrating(param):
         sout+="""\n"""
     sout+="""echo "************** Launching Variant Effect Predictor (VEP - Ensembl) annotation ******************"\n"""
     sout+="""$VEP \\\n"""
-    sout+="""    -i $resvcfdir/$prefix$middfix_recal_final.vcf \\\n"""
+    sout+="""    -i $resvcfdir/$prefix$middfix"_recal_final.vcf" \\\n"""
     sout+="""    --cache \\\n"""
     sout+="""    --everything \\\n"""
     sout+="""    --vcf \\\n"""
     sout+="""    --force_overwrite \\\n"""
     sout+="""    --dir_cache $GLOBALSCRATCH/genomes/homo_sapiens/hg19/annotations/VEP \\\n"""
     sout+="""    --offline \\\n"""
-    sout+="""    --output_file $resvcfdir/$prefix$middfix_recal_final_VEP.vcf \\\n"""
-    sout+="""    --stats_file $resvcfdir/$prefix$middfix_recal_final_VEP_summary.html \n"""
+    sout+="""    --output_file $resvcfdir/$prefix$middfix"_recal_final_VEP.vcf" \\\n"""
+    sout+="""    --stats_file $resvcfdir/$prefix$middfix"_recal_final_VEP_summary.html" \n"""
     sout+="""\n"""
     sout+="""randomNumber=$RANDOM \n"""
-    sout+="""$VCFSORTER $dict $resvcfdir/$prefix$middfix_recal_final_VEP.vcf > swap_$randomNumber \n"""
-    sout+="""mv swap_$randomNumber $resvcfdir/$prefix$middfix_recal_final_VEP.vcf \n"""
+    sout+="""$VCFSORTER $dict $resvcfdir/$prefix$middfix"_recal_final_VEP.vcf" > swap_$randomNumber \n"""
+    sout+="""mv swap_$randomNumber $resvcfdir/$prefix$middfix"_recal_final_VEP.vcf" \n"""
     sout+="""\n"""
     sout+="""echo "************** Finished ******************"\n"""
 
