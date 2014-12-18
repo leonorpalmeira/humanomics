@@ -63,6 +63,8 @@ def header(param,step):
     sout+="""VCFSORTER=$BIN/vcfsorter.pl\n"""
     sout+="""TABIX=$BIN/tabix-1.1\n"""
     sout+="""SNPSIFT=$JAVAcustom" "$BIN/SnpSift_4.0_E_2014-09-13.jar\n"""
+    sout+="""module av R\n"""
+    sout+="""module load R/3.1.2-goolf-1.6.10\n"""
     if param.has_key("noPhoneHome"):
         sout+="""noET="""+param["noPhoneHome"]+"""\n"""
     sout+="""echo "BIN:" $BIN\n"""
