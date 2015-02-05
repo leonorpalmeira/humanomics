@@ -88,8 +88,8 @@ def header(param,step):
     sout+="""dict=$GLOBALSCRATCH/genomes/homo_sapiens/hg19/genome/HG19.dict\n"""
     sout+="""db=$GLOBALSCRATCH/genomes/homo_sapiens/hg19/bwa_hash/HG19.fasta\n"""
     sout+="""vcfdir=$GLOBALSCRATCH/genomes/homo_sapiens/hg19/variation\n"""
-    sout+="""clinvarVCF=$GLOBALSCRATCH/genomes/homo_sapiens/hg19/allelic_frequencies/clinvar_20141105.vcf.gz\n"""
-    sout+="""exacVCF=$GLOBALSCRATCH/genomes/homo_sapiens/hg19/allelic_frequencies/ExAC.r0.2.sites.vep.ExAC.vcf.gz\n"""
+    sout+="""clinvarVCF=$GLOBALSCRATCH/genomes/homo_sapiens/hg19/allelic_frequencies/clinvar_20141202.vcf.gz\n"""
+    sout+="""exacVCF=$GLOBALSCRATCH/genomes/homo_sapiens/hg19/allelic_frequencies/ExAC.r0.3.sites.vep.ExAC.vcf.gz\n"""
     sout+="""kgVCF=$GLOBALSCRATCH/genomes/homo_sapiens/hg19/allelic_frequencies/ALL.autosomes.phase3_shapeit2_mvncall_integrated_v5.20130502.sites.vcf.gz\n"""
     if param["AnalysisMode"]=="EXOME":
         sout+="""echo "*************** EXOME Analysis Mode *****************"\n"""
