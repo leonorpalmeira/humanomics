@@ -697,6 +697,8 @@ def GenotypingAndRecalibrating(param):
         sout+="""    --vcf \\\n"""
         sout+="""    --force_overwrite \\\n"""
         sout+="""    --dir_cache $GLOBALSCRATCH/genomes/homo_sapiens/hg19/annotations/VEP \\\n"""
+        sout+="""    --dir_plugins $GLOBALSCRATCH/genomes/homo_sapiens/hg19/annotations/VEP/Plugins \\\n"""
+        sout+="""    --plugin LoF \\\n"""
         sout+="""    --offline \\\n"""
         sout+="""    --output_file $resvcfdir/$prefix$middfix"_recal_final_VEP.vcf" \\\n"""
         sout+="""    --stats_file $resvcfdir/$prefix$middfix"_recal_final_VEP_summary.html" \n"""
