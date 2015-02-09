@@ -51,7 +51,7 @@ def header(param,step):
     sout+="""export PATH=$GLOBALSCRATCH/bin:$PATH # get R from $BIN (not from the system)\n"""
     sout+="""BIN=$GLOBALSCRATCH/bin\n"""
     sout+="""SRC=$GLOBALSCRATCH/src\n"""
-    sout+="""JAVAcustom=$BIN"/java-1.7.0_71 -Xmx"$mem"g -XX:ParallelGCThreads="$ncores" -jar"\n"""
+    sout+="""JAVAcustom=$BIN"/java-1.7.0_71 -Djava.io.tmpdir="$GLOBALSCRATCH"/tmp -Xmx"$mem"g -XX:ParallelGCThreads="$ncores" -jar"\n"""
     sout+="""FASTQC=$BIN/fastqc_v0.11.2\n"""
     sout+="""BWA=$BIN/bwa-0.7.10\n"""
     sout+="""SAMTOOLS=$BIN/samtools-1.1\n"""
