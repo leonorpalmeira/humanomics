@@ -211,7 +211,7 @@ def MappingAndPreProcessing(param):
     sout+="""$BWA mem \\\n"""
     sout+="""    -t $ncores \\\n"""
     sout+="""    -M \\\n"""
-    sout+="""    -R '$RG' \\\n"""
+    sout+="""    -R $RG \\\n"""
     sout+="""    $db \\\n"""
     sout+="""    $query1 \\\n"""
     sout+="""    $query2 | $SAMTOOLS view -bSho $bam -\n"""
