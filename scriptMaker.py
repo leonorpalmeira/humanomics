@@ -34,6 +34,8 @@ def header(param,step):
     sout+="""#SBATCH --time=4:30:00                                           #@@@ fill with appropriate value: here 4h30\n"""
     sout+="""#SBATCH --array="""+param["SLURMarray"]+"""\n"""
     sout+="""\n"""
+    sout+="""set -vx # verbose and trace BASH commands"""
+    sout+="""\n"""
     sout+="""echo "************** SLURM ENV ******************"\n"""
     sout+="""echo "TASK_ID:" $TASK_ID\n"""
     sout+="""echo "SLURM_ARRAY_TASK_ID:" $SLURM_ARRAY_TASK_ID\n"""
