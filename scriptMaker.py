@@ -30,7 +30,10 @@ def header(param,step):
     sout+="""#\n"""
     sout+="""#SBATCH --ntasks=1                                               #@@@ fill with appropriate value: here 1 task\n"""
     sout+="""#SBATCH --cpus-per-task=1                                        #@@@ fill with appropriate value (max on HMEM=25): here 1 core per task\n"""
-    sout+="""#SBATCH --mem-per-cpu=10000                                      #@@@ fill with appropriate value: here 10Gb of RAM\n"""
+    if param["AnalysisMode"]=="EXOME":
+        sout+="""#SBATCH --mem-per-cpu=10000\n"""
+    elif param["AnalysisMode"]=="PANEL":
+        sout+="""#SBATCH --mem-per-cpu=3000\n"""
     sout+="""#SBATCH --time=4:30:00                                           #@@@ fill with appropriate value: here 4h30\n"""
     sout+="""#SBATCH --array="""+param["SLURMarray"]+"""\n"""
     sout+="""\n"""
