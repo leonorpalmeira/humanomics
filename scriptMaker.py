@@ -789,3 +789,5 @@ def GenotypingAndRecalibrating(param):
         print "File not found: [", out, "]"
         sys.exit(2)
     return
+
+# essai
